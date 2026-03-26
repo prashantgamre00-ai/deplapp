@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Tools List - Tools Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Tools Inventory</h4>
+                <div>
+                    <a href="{{ url_for('select_location') }}" class="btn btn-success me-2">
+                        <i class="bi bi-geo-alt"></i> Select Location & Add Tool
+                    </a>
+                    <a href="{{ url_for('add_tool') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add Tool (All Fields)
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if tools %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Zone Name</th>
+                                    <th>FRT Name</th>
+                                    <th>Type of Tools</th>
+                                    <th>Serial Number</th>
+                                    <th>Remarks</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tool in tools %}
+                                    <tr>
+                                        <td>{{ tool.id }}</td>
+                                        <td><span class="badge bg-primary">{{ tool.zone_name }}</span></td>
+                                        <td><span class="badge bg-info">{{ tool.frt_name }}</span></td>
+                                        <td>{{ tool.tool_type }}</td>
+                                        <td>{{ tool.serial_number or '-' }}</td>
+                                        <td>{{ tool.remarks[:30] + '...' if tool.remarks and tool.remarks|length > 30 else (tool.remarks or '-') }}</td>
+                                        <td>{{ tool.created_at.strftime('%Y-%m-%d %H:%M') if tool.created_at else '' }}</td>
+                                        <td>
+                                            <a href="{{ url_for('view_tool', id=tool.id) }}" class="btn btn-info btn-action btn-sm me-1">View</a>
+                                            <a href="{{ url_for('edit_tool', id=tool.id) }}" class="btn btn-warning btn-action btn-sm me-1">Edit</a>
+                                            <form method="POST" action="{{ url_for('delete_tool', id=tool.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this tool?');">
+                                                <button type="submit" class="btn btn-danger btn-action btn-sm">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <h5 class="text-muted">No tools found</h5>
+                        <p class="text-muted">Start by adding your first tool to the inventory.</p>
+                        <div>
+                            <a href="{{ url_for('select_location') }}" class="btn btn-success me-2">Select Location & Add Tool</a>
+                            <a href="{{ url_for('add_tool') }}" class="btn btn-primary">Add Tool</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-primary">{{ tools|length }}</h4>
+                            <p class="text-muted">Total Tools</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-success">{{ tools|map(attribute='zone_name')|unique|list|length }}</h4>
+                            <p class="text-muted">Unique Zones</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-info">{{ tools|map(attribute='frt_name')|unique|list|length }}</h4>
+                            <p class="text-muted">Unique FRT Locations</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-warning">{{ tools|map(attribute='tool_type')|unique|list|length }}</h4>
+                            <p class="text-muted">Tool Types</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-secondary">{{ tools|selectattr('serial_number')|selectattr('serial_number', 'ne', '')|list|length }}</h4>
+                            <p class="text-muted">With Serial Numbers</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-dark">{{ tools|selectattr('remarks')|selectattr('remarks', 'ne', '')|list|length }}</h4>
+                            <p class="text-muted">With Remarks</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

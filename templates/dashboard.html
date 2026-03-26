@@ -1,0 +1,830 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ user_zone }} - {{ user_frt }}{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -1rem -15px 2rem -15px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        height: 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 10px;
+    }
+
+    .quick-actions {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .activity-feed {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .activity-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-time {
+        color: #999;
+        font-size: 0.8rem;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+    }
+
+    .nav-tabs {
+        border-bottom: 2px solid #e9ecef;
+        margin-bottom: 2rem;
+    }
+
+    .nav-tabs .nav-link {
+        border: none;
+        color: #666;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+        border-radius: 10px 10px 0 0;
+        transition: all 0.3s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background: #f8f9fa;
+        color: #667eea;
+    }
+
+    .nav-tabs .nav-link.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+    }
+
+    .tab-content {
+        background: white;
+        border-radius: 0 15px 15px 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .zone-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .zone-card-mini {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border-left: 4px solid #667eea;
+        transition: transform 0.2s ease;
+        cursor: pointer;
+    }
+
+    .zone-card-mini:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .zone-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .zone-stats-mini {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-mini {
+        text-align: center;
+    }
+
+    .stat-mini-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+
+    .stat-mini-label {
+        font-size: 0.75rem;
+        color: #666;
+        text-transform: uppercase;
+    }
+
+    .frt-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 1rem;
+    }
+
+    .frt-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .frt-item.empty {
+        opacity: 0.6;
+    }
+
+    .frt-name {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .frt-count {
+        background: #667eea;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .frt-count.zero {
+        background: #e9ecef;
+        color: #666;
+    }
+
+    .tools-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .tools-table .table {
+        margin-bottom: 0;
+    }
+
+    .tools-table th {
+        background: #f8f9fa;
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .tools-table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-color: #f0f0f0;
+    }
+
+    .btn-action {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 5px;
+        margin: 0.125rem;
+    }
+
+    .location-badge {
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+        margin: 0.25rem;
+    }
+
+    .no-tools {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+    }
+
+    /* Mobile-specific styles */
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem 0;
+            margin: -1rem -15px 1.5rem -15px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .zone-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .zone-card-mini {
+            padding: 1rem;
+        }
+
+        .nav-tabs .nav-link {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .tab-content {
+            padding: 1rem;
+        }
+
+        .quick-actions,
+        .activity-feed {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .activity-item {
+            padding: 0.75rem 0;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+        }
+
+        .d-flex.justify-content-end.gap-2 {
+            flex-direction: column;
+            gap: 0.5rem !important;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .btn-action {
+            width: auto;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-header {
+            padding: 1rem 0;
+            margin: -1rem -15px 1rem -15px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.25rem;
+        }
+
+        .stat-card {
+            padding: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+        }
+
+        .stat-icon {
+            font-size: 1.75rem;
+        }
+
+        .nav-tabs {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .nav-tabs .nav-link {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .zone-card-mini {
+            padding: 0.75rem;
+        }
+
+        .stat-mini-number {
+            font-size: 1.25rem;
+        }
+
+        .btn-action {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.7rem;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.375rem;
+        }
+
+        .quick-actions .d-grid {
+            gap: 0.5rem;
+        }
+
+        .quick-actions .btn {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Touch devices */
+    @media (hover: none) and (pointer: coarse) {
+        .btn-action {
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-card, .zone-card-mini {
+            cursor: pointer;
+        }
+    }
+</style>
+
+<div class="dashboard-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-8">
+                <h1 class="mb-2">
+                    <i class="bi bi-speedometer2"></i> Tools Dashboard
+                </h1>
+                <p class="mb-0 opacity-75">
+                    <i class="bi bi-geo-alt"></i> 
+                    <span class="location-badge badge bg-light text-dark">{{ user_zone }}</span>
+                    <i class="bi bi-pin-map ms-2"></i>
+                    <span class="location-badge badge bg-light text-dark">{{ user_frt }}</span>
+                </p>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="d-flex justify-content-end gap-2 flex-wrap mt-3 mt-md-0">
+                    <a href="{{ url_for('add_tool') }}" class="btn btn-light">
+                        <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">Add Tool</span>
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-light">
+                        <i class="bi bi-box-arrow-right"></i> <span class="d-none d-sm-inline">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" onclick="showTab('overview')">
+                <i class="bi bi-tools stat-icon text-primary"></i>
+                <div class="stat-number">{{ total_tools }}</div>
+                <div class="stat-label">Total Tools</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" onclick="showTab('zones')">
+                <i class="bi bi-geo-alt stat-icon text-info"></i>
+                <div class="stat-number">{{ zone_stats|length }}</div>
+                <div class="stat-label">Active Zones</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" onclick="showTab('frts')">
+                <i class="bi bi-pin-map stat-icon text-success"></i>
+                <div class="stat-number">{{ frt_stats|length }}</div>
+                <div class="stat-label">Active FRTs</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+            <div class="stat-card" onclick="showTab('tools')">
+                <i class="bi bi-tags stat-icon text-warning"></i>
+                <div class="stat-number">{{ tool_type_stats|length }}</div>
+                <div class="stat-label">Tool Types</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                <i class="bi bi-grid-3x3-gap"></i> Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="zones-tab" data-bs-toggle="tab" data-bs-target="#zones" type="button" role="tab">
+                <i class="bi bi-map"></i> Zones
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="frts-tab" data-bs-toggle="tab" data-bs-target="#frts" type="button" role="tab">
+                <i class="bi bi-pin-map"></i> FRTs
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tools-tab" data-bs-toggle="tab" data-bs-target="#tools" type="button" role="tab">
+                <i class="bi bi-tools"></i> Tools
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="dashboardTabContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <h5 class="mb-3">
+                        <i class="bi bi-graph-up"></i> Zone Overview
+                    </h5>
+                    <div class="zone-grid">
+                        {% for zone in all_zones %}
+                            <div class="zone-card-mini" onclick="showTab('zones')">
+                                <div class="zone-name">{{ zone }}</div>
+                                <div class="zone-stats-mini">
+                                    <div class="stat-mini">
+                                        <div class="stat-mini-number">{{ zone_stats[zone].total }}</div>
+                                        <div class="stat-mini-label">Tools</div>
+                                    </div>
+                                    <div class="stat-mini">
+                                        <div class="stat-mini-number">{{ zone_stats[zone].frt_count }}</div>
+                                        <div class="stat-mini-label">FRTs</div>
+                                    </div>
+                                    <div class="stat-mini">
+                                        <div class="stat-mini-number">{{ zone_stats[zone].frt_coverage }}%</div>
+                                        <div class="stat-mini-label">Coverage</div>
+                                    </div>
+                                </div>
+                                {% if zone_stats[zone].empty_frt_count > 0 %}
+                                    <small class="text-warning">{{ zone_stats[zone].empty_frt_count }} empty FRTs</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="quick-actions mb-4">
+                        <h6 class="mb-3">
+                            <i class="bi bi-lightning"></i> Quick Actions
+                        </h6>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('add_tool') }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Add New Tool
+                            </a>
+                            <button class="btn btn-outline-secondary" onclick="window.print()">
+                                <i class="bi bi-printer"></i> Print Inventory
+                            </button>
+                            <a href="{{ url_for('export_excel') }}" class="btn btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Download Excel
+                            </a>
+                            <a href="{{ url_for('export_csv') }}" class="btn btn-info">
+                                <i class="bi bi-file-earmark-text"></i> Download CSV
+                            </a>
+                        </div>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <!-- Overall Statistics -->
+                    <div class="quick-actions mb-4">
+                        <h6 class="mb-3">
+                            <i class="bi bi-graph-up"></i> Overall Statistics
+                        </h6>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="fw-bold text-primary">{{ total_with_serial }}</div>
+                                <small class="text-muted">With Serial</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="fw-bold text-success">{{ total_with_remarks }}</div>
+                                <small class="text-muted">With Remarks</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="fw-bold text-info">{{ "%.1f"|format((total_with_serial / total_tools * 100) if total_tools > 0 else 0) }}%</div>
+                                <small class="text-muted">Serial Coverage</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="fw-bold text-warning">{{ "%.1f"|format((total_with_remarks / total_tools * 100) if total_tools > 0 else 0) }}%</div>
+                                <small class="text-muted">Remarks Coverage</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="activity-feed">
+                        <h6 class="mb-3">
+                            <i class="bi bi-clock-history"></i> Recent Activity
+                        </h6>
+                        {% if recent_tools %}
+                            {% for tool in recent_tools %}
+                                <div class="activity-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <strong>{{ tool.tool_type }}</strong>
+                                            <br><small class="text-muted">{{ tool.zone_name }} - {{ tool.frt_name }}</small>
+                                            {% if tool.serial_number %}
+                                                <br><small class="text-muted">SN: {{ tool.serial_number }}</small>
+                                            {% endif %}
+                                        </div>
+                                        <div class="activity-time ms-2">
+                                            {{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center">No recent activity</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zones Tab -->
+        <div class="tab-pane fade" id="zones" role="tabpanel">
+            <h5 class="mb-4">
+                <i class="bi bi-map"></i> Zone Details
+            </h5>
+            <div class="row">
+                {% for zone in all_zones %}
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="zone-card-mini">
+                            <div class="zone-name">{{ zone }}</div>
+                            <div class="zone-stats-mini">
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ zone_stats[zone].total }}</div>
+                                    <div class="stat-mini-label">Tools</div>
+                                </div>
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ zone_stats[zone].frt_count }}</div>
+                                    <div class="stat-mini-label">Active FRTs</div>
+                                </div>
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ zone_stats[zone].tool_type_count }}</div>
+                                    <div class="stat-mini-label">Tool Types</div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted">Coverage: {{ zone_stats[zone].frt_count }}/{{ zone_stats[zone].total_frt_count }} FRTs ({{ zone_stats[zone].frt_coverage }}%)</small>
+                                <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress-bar bg-success" style="width: {{ zone_stats[zone].frt_coverage }}%"></div>
+                                </div>
+                            </div>
+                            <div class="frt-list">
+                                {% for frt in all_frts[zone] %}
+                                    {% set frt_key = zone + '_' + frt %}
+                                    <div class="frt-item {% if frt_stats[frt_key].total == 0 %}empty{% endif %}">
+                                        <span class="frt-name">{{ frt }}</span>
+                                        <span class="frt-count {% if frt_stats[frt_key].total == 0 %}zero{% endif %}">{{ frt_stats[frt_key].total }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- FRTs Tab -->
+        <div class="tab-pane fade" id="frts" role="tabpanel">
+            <h5 class="mb-4">
+                <i class="bi bi-pin-map"></i> FRT Locations
+            </h5>
+            <div class="row">
+                {% for zone in all_zones %}
+                    <div class="col-12">
+                        <h6 class="mb-3">{{ zone }}</h6>
+                        <div class="zone-grid mb-4">
+                            {% for frt in all_frts[zone] %}
+                                {% set frt_key = zone + '_' + frt %}
+                                <div class="zone-card-mini {% if frt_stats[frt_key].total == 0 %}empty{% endif %}">
+                                    <div class="zone-name">{{ frt }}</div>
+                                    <div class="zone-stats-mini">
+                                        <div class="stat-mini">
+                                            <div class="stat-mini-number">{{ frt_stats[frt_key].total }}</div>
+                                            <div class="stat-mini-label">Tools</div>
+                                        </div>
+                                        <div class="stat-mini">
+                                            <div class="stat-mini-number">{{ frt_stats[frt_key].tool_type_count }}</div>
+                                            <div class="stat-mini-label">Types</div>
+                                        </div>
+                                    </div>
+                                    {% if frt_stats[frt_key].total > 0 %}
+                                        <div class="mb-2">
+                                            <small class="text-muted">Serial: {{ frt_stats[frt_key].with_serial }}/{{ frt_stats[frt_key].total }}</small>
+                                            <br><small class="text-muted">Remarks: {{ frt_stats[frt_key].with_remarks }}/{{ frt_stats[frt_key].total }}</small>
+                                        </div>
+                                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="showToolsForLocation('{{ zone }}', '{{ frt }}')">
+                                            <i class="bi bi-eye"></i> View Tools
+                                        </a>
+                                    {% else %}
+                                        <div class="text-center">
+                                            <small class="text-muted">No tools</small>
+                                            <br>
+                                            <a href="{{ url_for('add_tool') }}" class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-plus-circle"></i> Add Tool
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Tools Tab -->
+        <div class="tab-pane fade" id="tools" role="tabpanel">
+            <h5 class="mb-4">
+                <i class="bi bi-tools"></i> All Tools
+            </h5>
+            <div class="tools-table">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Zone</th>
+                                <th>FRT</th>
+                                <th>Tool Type</th>
+                                <th>Serial</th>
+                                <th>Remarks</th>
+                                <th>Added</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if tools_by_location %}
+                                {% for zone in all_zones %}
+                                    {% for frt in all_frts[zone] %}
+                                        {% for tool in tools_by_location[zone][frt] %}
+                                            <tr>
+                                                <td><span class="badge bg-primary">{{ zone }}</span></td>
+                                                <td><span class="badge bg-info">{{ frt }}</span></td>
+                                                <td><span class="badge bg-secondary">{{ tool.tool_type }}</span></td>
+                                                <td>{{ tool.serial_number or '-' }}</td>
+                                                <td>{{ tool.remarks[:30] + '...' if tool.remarks and tool.remarks|length > 30 else (tool.remarks or '-') }}</td>
+                                                <td>{{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}</td>
+                                                <td>
+                                                    <div class="d-flex gap-1">
+                                                        <a href="{{ url_for('view_tool', id=tool.id) }}" class="btn btn-info btn-action btn-sm">View</a>
+                                                        <a href="{{ url_for('edit_tool', id=tool.id) }}" class="btn btn-warning btn-action btn-sm">Edit</a>
+                                                        <form method="POST" action="{{ url_for('delete_tool', id=tool.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this tool?');">
+                                                            <button type="submit" class="btn btn-danger btn-action btn-sm">Delete</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                                        <p class="text-muted mt-2">No tools found</p>
+                                        <a href="{{ url_for('add_tool') }}" class="btn btn-primary btn-sm mt-2">
+                                            <i class="bi bi-plus-circle"></i> Add Your First Tool
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tabName) {
+    const tab = document.querySelector(`[data-bs-target="#${tabName}"]`);
+    if (tab) {
+        const bsTab = new bootstrap.Tab(tab);
+        bsTab.show();
+    }
+}
+
+function showToolsForLocation(zone, frt) {
+    // Navigate to tools tab and scroll to the specific location
+    showTab('tools');
+    setTimeout(() => {
+        // You could add highlighting or scrolling logic here
+        console.log(`Showing tools for ${zone} - ${frt}`);
+    }, 100);
+}
+
+// Show success message when export buttons are clicked
+document.addEventListener('DOMContentLoaded', function() {
+    const excelBtn = document.querySelector('a[href*="export/excel"]');
+    const csvBtn = document.querySelector('a[href*="export/csv"]');
+    
+    if (excelBtn) {
+        excelBtn.addEventListener('click', function(e) {
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating Excel...';
+            this.classList.add('disabled');
+            
+            // Reset after a short delay (file download starts automatically)
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('disabled');
+            }, 2000);
+        });
+    }
+    
+    if (csvBtn) {
+        csvBtn.addEventListener('click', function(e) {
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating CSV...';
+            this.classList.add('disabled');
+            
+            // Reset after a short delay (file download starts automatically)
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('disabled');
+            }, 2000);
+        });
+    }
+});
+
+// Add touch feedback for mobile
+if ('ontouchstart' in window) {
+    document.querySelectorAll('.stat-card, .zone-card-mini, .btn').forEach(element => {
+        element.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.95)';
+        });
+        element.addEventListener('touchend', function() {
+            this.style.transform = '';
+        });
+    });
+}
+</script>
+{% endblock %}

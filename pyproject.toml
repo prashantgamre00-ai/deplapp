@@ -1,0 +1,27 @@
+[project]
+name = "depl-webapp"
+version = "0.1.0"
+description = "A web-based tool tracking system built with Flask and SQLAlchemy"
+authors = [
+    {name = "Prashant Gamre"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "flask==2.3.3",
+    "flask-sqlalchemy==3.0.5",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "openpyxl==3.1.2",
+]
+
+[build-system]
+requires = ["setuptools>=65.5.0"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = []
+
+[tool.setuptools.packages.find]
+include = ["*"]
+exclude = ["instance*", "templates*"]

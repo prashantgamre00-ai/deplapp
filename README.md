@@ -1,0 +1,113 @@
+# Tools Tracker Flask Application
+
+A web-based tool tracking system built with Flask and SQLAlchemy for managing tools across different zones and FRT locations.
+
+## Features
+
+- **CRUD Operations**: Create, Read, Update, and Delete tools
+- **Database Storage**: SQLite database for persistent data storage
+- **Responsive Design**: Bootstrap-based responsive UI
+- **Data Organization**: Tools organized by Zone Name and FRT Name
+- **Search & Filter**: Easy navigation through tool inventory
+- **Summary Dashboard**: Overview of total tools, zones, and locations
+
+## Installation
+
+### Using uv (Recommended)
+
+1. Install uv if you haven't already:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Install dependencies and create virtual environment:
+```bash
+uv sync
+```
+
+3. Run the application:
+```bash
+uv run python app.py
+```
+
+### Using pip (Legacy)
+
+1. Install Python requirements:
+```bash
+pip install -r requirements.txt
+```
+
+2. Run the application:
+```bash
+python app.py
+```
+
+3. Open your browser and navigate to `http://127.0.0.1:5000`
+
+## Database Schema
+
+The application uses a single `Tool` model with the following fields:
+- `id`: Primary key
+- `zone_name`: Zone name (e.g., COASTAL, NORTH GO, SOUTH GOA)
+- `frt_name`: FRT location name (e.g., KHED, JAMSANDE, MURUD)
+- `tool_type`: Type of tool (e.g., CABLE LOC, OTDR, SPLICING M)
+- `created_at`: Timestamp when tool was added
+- `updated_at`: Timestamp when tool was last updated
+
+## Usage
+
+### Adding a Tool
+1. Click "Add New Tool" button
+2. Fill in Zone Name, FRT Name, and Tool Type
+3. Click "Add Tool" to save
+
+### Viewing Tools
+- Home page shows all tools in a table format
+- Click "View" to see detailed information
+- Summary cards show statistics
+
+### Editing a Tool
+1. Click "Edit" button for any tool
+2. Modify the required fields
+3. Click "Update Tool" to save changes
+
+### Deleting a Tool
+1. Click "Delete" button for any tool
+2. Confirm deletion in the popup dialog
+
+## Common Data
+
+Based on the provided data, common values include:
+
+**Zone Names:** COASTAL, NAVI MUME, NORTH GO, SOUTH GOA, KALYAN, VASAI, RAJKOT, OFFICE
+
+**FRT Names:** KHED, JAMSANDE, MURUD, BELAPUR-1, MAPUSA, MADGAON, VERNA, BADLAPUR, BHIWANDI, etc.
+
+**Tool Types:** CABLE LOC, LASER LIGH, OTDR, SPLICING M, POWER MET, Fiber Cleave, Live Fiber de, striper, Ladder
+
+## Technical Details
+
+- **Framework**: Flask 2.3.3
+- **Database**: SQLAlchemy with SQLite
+- **Frontend**: Bootstrap 5.1.3
+- **Python Version**: 3.7+
+
+## File Structure
+
+```
+Tools tracker/
+├── app.py                 # Main Flask application
+├── requirements.txt       # Python dependencies
+├── templates/            # HTML templates
+│   ├── base.html         # Base template
+│   ├── index.html        # Home page
+│   ├── add.html          # Add tool form
+│   ├── edit.html         # Edit tool form
+│   └── view.html         # Tool details view
+├── tools_tracker.db      # SQLite database (created automatically)
+└── README.md            # This file
+```
+
+## Database Initialization
+
+The database is automatically created when you first run the application. The `db.create_all()` command in `app.py` will create the necessary tables if they don't exist.

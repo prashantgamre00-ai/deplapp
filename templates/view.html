@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}View Tool - Tools Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Tool Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Tool ID:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        {{ tool.id }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Zone Name:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="badge bg-primary">{{ tool.zone_name }}</span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>FRT Name:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="badge bg-info">{{ tool.frt_name }}</span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Type of Tools:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="badge bg-success">{{ tool.tool_type }}</span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Serial Number:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        {{ tool.serial_number or '-' }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Remarks:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        {{ tool.remarks or '-' }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Created At:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        {{ tool.created_at.strftime('%Y-%m-%d %H:%M:%S') if tool.created_at else 'N/A' }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Last Updated:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        {{ tool.updated_at.strftime('%Y-%m-%d %H:%M:%S') if tool.updated_at else 'N/A' }}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to List</a>
+                    <div>
+                        <a href="{{ url_for('edit_tool', id=tool.id) }}" class="btn btn-warning me-2">Edit</a>
+                        <form method="POST" action="{{ url_for('delete_tool', id=tool.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this tool?');">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Location Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Zone:</strong> {{ tool.zone_name }}</p>
+                        <p><strong>FRT Location:</strong> {{ tool.frt_name }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tool Type:</strong> {{ tool.tool_type }}</p>
+                        <p><strong>Database ID:</strong> #{{ tool.id }}</p>
+                    </div>
+                </div>
+                {% if tool.serial_number or tool.remarks %}
+                    <hr>
+                    <div class="row">
+                        {% if tool.serial_number %}
+                            <div class="col-md-6">
+                                <p><strong>Serial Number:</strong> {{ tool.serial_number }}</p>
+                            </div>
+                        {% endif %}
+                        {% if tool.remarks %}
+                            <div class="col-md-6">
+                                <p><strong>Remarks:</strong> {{ tool.remarks }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block title %}Location Login - Tools Tracker{% endblock %}
+
+{% block content %}
+<style>
+    .login-container {
+        min-height: calc(100vh - 200px);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        margin: -1rem -15px -1rem -15px;
+    }
+
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        overflow: hidden;
+        margin: 1rem;
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .login-body {
+        padding: 2rem 1.5rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        padding: 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        min-height: 50px;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+        min-height: 50px;
+    }
+
+    .btn-login:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-login:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .location-preview {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        border-left: 4px solid #667eea;
+        display: none;
+    }
+
+    .location-preview.show {
+        display: block;
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .zone-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .stats-mini {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #666;
+        margin-top: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-text {
+        color: #666;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Mobile-specific adjustments */
+    @media (max-width: 768px) {
+        .login-container {
+            min-height: calc(100vh - 150px);
+            padding: 0.5rem;
+        }
+
+        .login-card {
+            margin: 0.5rem;
+            border-radius: 15px;
+        }
+
+        .login-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .login-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .zone-icon {
+            font-size: 2.5rem;
+        }
+
+        .login-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .login-header p {
+            font-size: 0.9rem;
+        }
+
+        .stats-mini {
+            gap: 0.75rem;
+        }
+
+        .stat-item {
+            padding: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 1.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .login-header {
+            padding: 1rem 0.75rem;
+        }
+
+        .login-body {
+            padding: 1rem 0.75rem;
+        }
+
+        .zone-icon {
+            font-size: 2rem;
+        }
+
+        .login-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .form-control, .form-select {
+            padding: 0.875rem;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        .btn-login {
+            padding: 0.875rem;
+            font-size: 1rem;
+        }
+
+        .location-preview {
+            padding: 1rem;
+        }
+
+        .stats-mini {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .stat-item {
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Touch devices */
+    @media (hover: none) and (pointer: coarse) {
+        .form-control, .form-select, .btn-login {
+            min-height: 44px;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="zone-icon">
+                <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <h2 class="mb-2">Welcome to Tools Tracker</h2>
+            <p class="mb-0 opacity-75">Select your location to continue</p>
+        </div>
+        <div class="login-body">
+            <form method="POST" id="locationLoginForm">
+                <div class="mb-4">
+                    <label for="zone_name" class="form-label">
+                        <i class="bi bi-map"></i> Select Your Zone
+                    </label>
+                    <select class="form-select form-select-lg" id="zone_name" name="zone_name" required>
+                        <option value="">Choose your zone...</option>
+                        <option value="COASTAL">COASTAL</option>
+                        <option value="NAVI MUME">NAVI MUME</option>
+                        <option value="NORTH GO">NORTH GO</option>
+                        <option value="SOUTH GOA">SOUTH GOA</option>
+                        <option value="KALYAN">KALYAN</option>
+                        <option value="VASAI">VASAI</option>
+                        <option value="RAJKOT">RAJKOT</option>
+                        <option value="OFFICE">OFFICE</option>
+                    </select>
+                    <div class="form-text">Select your work zone</div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="frt_name" class="form-label">
+                        <i class="bi bi-pin-map"></i> Select FRT Location
+                    </label>
+                    <select class="form-select form-select-lg" id="frt_name" name="frt_name" required disabled>
+                        <option value="">First select a zone...</option>
+                    </select>
+                    <div class="form-text">FRT locations will appear based on your zone selection</div>
+                </div>
+                
+                <div class="location-preview" id="locationPreview">
+                    <h6 class="mb-3">Selected Location:</h6>
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                        <div class="mb-2 mb-sm-0">
+                            <span class="badge bg-primary fs-6 p-2 me-2">{{ zone_name or 'ZONE' }}</span>
+                            <span class="badge bg-info fs-6 p-2">{{ frt_name or 'FRT' }}</span>
+                        </div>
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                    </div>
+                    <div class="stats-mini" id="locationStats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="toolsCount">0</div>
+                            <div class="stat-label">Tools</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="typesCount">0</div>
+                            <div class="stat-label">Types</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-login btn-lg mt-4" id="loginBtn" disabled>
+                    <i class="bi bi-box-arrow-in-right"></i> Enter Dashboard
+                </button>
+            </form>
+            
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check"></i> Secure location-based access
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const zoneFrtMapping = {
+    'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
+    'NAVI MUME': ['BELAPUR-1', 'AIROLI', 'SHILPHATA', 'NAVI MUMBAI-SD'],
+    'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
+    'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
+    'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
+    'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BELAPUR-2', 'SANPADA-1', 'SANPADA-2', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
+    'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
+    'OFFICE': ['OFFICE']
+};
+
+// Sample data for demonstration
+const locationData = {
+    'COASTAL': { 'KHED': 12, 'JAMSANDE': 8, 'MURUD': 15 },
+    'NAVI MUME': { 'BELAPUR-1': 20, 'AIROLI': 18, 'SHILPHATA': 10, 'NAVI MUMBAI-SD': 25 },
+    'NORTH GO': { 'MAPUSA': 14, 'PANJIM': 22, 'GOA CIVIL': 16 },
+    'SOUTH GOA': { 'MADGAON': 19, 'VERNA': 13, 'CONCOLIM': 11, 'SANQUELIM': 17 },
+    'KALYAN': { 'SHRINGARTALE': 9, 'AMBADI': 7, 'KALYAN-SD': 12 },
+    'VASAI': { 'BADLAPUR': 15, 'BHIWANDI': 18, 'KALYAN': 14, 'BELAPUR-2': 16, 'SANPADA-1': 20, 'SANPADA-2': 19, 'BOISAR': 13, 'VASAI': 21, 'TALASARI': 10, 'VIRAR': 17 },
+    'RAJKOT': { 'DHARI': 8, 'KUDAL': 11, 'MAHAD': 9, 'ALIBAG': 12, 'CHIPLUN': 14, 'RAJAPUR': 10 },
+    'OFFICE': { 'OFFICE': 25 }
+};
+
+document.getElementById('zone_name').addEventListener('change', function() {
+    const zoneSelect = document.getElementById('zone_name');
+    const frtSelect = document.getElementById('frt_name');
+    const selectedZone = zoneSelect.value;
+    
+    // Reset FRT selection
+    frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
+    frtSelect.disabled = !selectedZone;
+    
+    if (selectedZone && zoneFrtMapping[selectedZone]) {
+        zoneFrtMapping[selectedZone].forEach(function(frt) {
+            const option = document.createElement('option');
+            option.value = frt;
+            option.textContent = frt;
+            frtSelect.appendChild(option);
+        });
+    }
+    
+    updateLocationPreview();
+    updateLoginButton();
+});
+
+document.getElementById('frt_name').addEventListener('change', function() {
+    updateLocationPreview();
+    updateLoginButton();
+});
+
+function updateLocationPreview() {
+    const zoneSelect = document.getElementById('zone_name');
+    const frtSelect = document.getElementById('frt_name');
+    const preview = document.getElementById('locationPreview');
+    const toolsCount = document.getElementById('toolsCount');
+    const typesCount = document.getElementById('typesCount');
+    
+    if (zoneSelect.value && frtSelect.value) {
+        preview.classList.add('show');
+        
+        // Update stats
+        const tools = locationData[zoneSelect.value]?.[frtSelect.value] || 0;
+        const types = Math.floor(Math.random() * 8) + 3;
+        
+        toolsCount.textContent = tools;
+        typesCount.textContent = types;
+        
+        // Update badges
+        preview.querySelector('.badge.bg-primary').textContent = zoneSelect.value;
+        preview.querySelector('.badge.bg-info').textContent = frtSelect.value;
+    } else {
+        preview.classList.remove('show');
+    }
+}
+
+function updateLoginButton() {
+    const zoneSelect = document.getElementById('zone_name');
+    const frtSelect = document.getElementById('frt_name');
+    const loginBtn = document.getElementById('loginBtn');
+    
+    if (zoneSelect.value && frtSelect.value) {
+        loginBtn.disabled = false;
+    } else {
+        loginBtn.disabled = true;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+depl_webapp.egg-info/PKG-INFO
+depl_webapp.egg-info/SOURCES.txt
+depl_webapp.egg-info/dependency_links.txt
+depl_webapp.egg-info/requires.txt
+depl_webapp.egg-info/top_level.txt
