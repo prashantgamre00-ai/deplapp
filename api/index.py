@@ -1,4 +1,4 @@
-from app import app, db
+from app import app, db, Tool
 import os
 from http.server import BaseHTTPRequestHandler
 from io import BytesIO
@@ -9,6 +9,9 @@ def init_database():
         try:
             db.create_all()
             print("Database initialized successfully - v2")
+            # Check if we have any tools
+            tool_count = Tool.query.count()
+            print(f"Current tool count: {tool_count}")
         except Exception as e:
             print(f"Database initialization error: {e}")
 

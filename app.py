@@ -31,6 +31,7 @@ class Tool(db.Model):
     tool_type = db.Column(db.String(100), nullable=False)
     serial_number = db.Column(db.String(100), nullable=True)
     remarks = db.Column(db.Text, nullable=True)
+    added_by = db.Column(db.String(200), nullable=True)  # Track who added the tool
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -366,7 +367,8 @@ def add_tool():
                 zone_name=session['user_zone'], 
                 frt_name=session['user_frt'], 
                 tool_type=tool_type,
-                serial_number=serial_number,
+                serial_number=s,
+                added_by=f"{session['user_zone']} - {session['user_frt']}"erial_number,
                 remarks=remarks
             )
             db.session.add(new_tool)
