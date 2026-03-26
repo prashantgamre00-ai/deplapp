@@ -4,35 +4,35 @@ from http.server import BaseHTTPRequestHandler
 from io import BytesIO
 
 # Initialize database if it doesn't exist
-def init_db():
+def init_database():
     with app.app_context():
         try:
             db.create_all()
-            print("Database initialized successfully")
+            print("Database initialized successfully - v2")
         except Exception as e:
             print(f"Database initialization error: {e}")
 
 # Initialize database
-init_db()
+init_database()
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        print("Processing GET request")
-        self.process_request('GET')
+        print("Processing GET request - v2")
+        self.handle_flask_request('GET')
     
     def do_POST(self):
-        print("Processing POST request")
-        self.process_request('POST')
+        print("Processing POST request - v2")
+        self.handle_flask_request('POST')
     
     def do_PUT(self):
-        print("Processing PUT request")
-        self.process_request('PUT')
+        print("Processing PUT request - v2")
+        self.handle_flask_request('PUT')
     
     def do_DELETE(self):
-        print("Processing DELETE request")
-        self.process_request('DELETE')
+        print("Processing DELETE request - v2")
+        self.handle_flask_request('DELETE')
     
-    def process_request(self, method):
+    def handle_flask_request(self, method):
         try:
             # Get request body
             content_length = int(self.headers.get('Content-Length', 0))
