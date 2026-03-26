@@ -3,6 +3,5 @@
   "installCommand": "uv sync",
   "buildCommand": "uv run python -c \"import app; app.db.create_all()\"",
   "outputDirectory": "",
-  "framework": "flask",
-  "pythonVersion": "3.12"
+  "framework": "flask"
 }
