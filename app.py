@@ -14,7 +14,12 @@ except ImportError:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tools_tracker.db')
+# Use in-memory database for serverless environment
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///tools_tracker.db')
+if 'vercel' in os.environ.get('VERCEL_ENV', '').lower() or os.path.exists('/tmp'):
+    # Use /tmp for Vercel serverless environment
+    database_url = 'sqlite:////tmp/tools_tracker.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -348,25 +353,32 @@ def add_tool():
         return redirect(url_for('login'))
     
     if request.method == 'POST':
-        tool_type = request.form['tool_type']
-        serial_number = request.form.get('serial_number', '')
-        remarks = request.form.get('remarks', '')
-        
-        if not tool_type:
-            flash('Tool Type is required!', 'error')
+        try:
+            tool_type = request.form['tool_type']
+            serial_number = request.form.get('serial_number', '')
+            remarks = request.form.get('remarks', '')
+            
+            if not tool_type:
+                flash('Tool Type is required!', 'error')
+                return render_template('add_tool.html')
+            
+            new_tool = Tool(
+                zone_name=session['user_zone'], 
+                frt_name=session['user_frt'], 
+                tool_type=tool_type,
+                serial_number=serial_number,
+                remarks=remarks
+            )
+            db.session.add(new_tool)
+            db.session.commit()
+            flash('Tool added successfully!', 'success')
+            return redirect(url_for('dashboard'))
+            
+        except Exception as e:
+            print(f"Error adding tool: {e}")
+            db.session.rollback()
+            flash(f'Error adding tool: {str(e)}', 'error')
             return render_template('add_tool.html')
-        
-        new_tool = Tool(
-            zone_name=session['user_zone'], 
-            frt_name=session['user_frt'], 
-            tool_type=tool_type,
-            serial_number=serial_number,
-            remarks=remarks
-        )
-        db.session.add(new_tool)
-        db.session.commit()
-        flash('Tool added successfully!', 'success')
-        return redirect(url_for('dashboard'))
     
     return render_template('add_tool.html', 
                          user_zone=session['user_zone'], 
