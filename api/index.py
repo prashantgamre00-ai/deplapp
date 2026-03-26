@@ -1,5 +1,6 @@
 from app import app, db
 import os
+from vercel_wsgi import handle_wsgi
 
 # Initialize database if it doesn't exist
 with app.app_context():
@@ -9,7 +10,7 @@ with app.app_context():
         print(f"Database initialization error: {e}")
 
 # Vercel serverless function handler
-handler = app.as_wsgi_app()
+handler = handle_wsgi(app)
 
 if __name__ == "__main__":
     app.run()
