@@ -1,19 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "app.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "app.py"
-    }
-  ],
   "installCommand": "uv sync",
   "buildCommand": "uv run python -c \"import app; app.db.create_all()\"",
   "outputDirectory": "",
-  "framework": "flask"
+  "framework": "flask",
+  "pythonVersion": "3.12"
 }
