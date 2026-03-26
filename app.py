@@ -367,8 +367,8 @@ def add_tool():
                 zone_name=session['user_zone'], 
                 frt_name=session['user_frt'], 
                 tool_type=tool_type,
-                serial_number=s,
-                added_by=f"{session['user_zone']} - {session['user_frt']}"erial_number,
+                serial_number=serial_number,
+                added_by=f"{session['user_zone']} - {session['user_frt']}",
                 remarks=remarks
             )
             db.session.add(new_tool)
