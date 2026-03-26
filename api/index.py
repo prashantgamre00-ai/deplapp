@@ -17,18 +17,22 @@ init_db()
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.handle_request('GET')
+        print("Processing GET request")
+        self.process_request('GET')
     
     def do_POST(self):
-        self.handle_request('POST')
+        print("Processing POST request")
+        self.process_request('POST')
     
     def do_PUT(self):
-        self.handle_request('PUT')
+        print("Processing PUT request")
+        self.process_request('PUT')
     
     def do_DELETE(self):
-        self.handle_request('DELETE')
+        print("Processing DELETE request")
+        self.process_request('DELETE')
     
-    def handle_request(self, method):
+    def process_request(self, method):
         try:
             # Get request body
             content_length = int(self.headers.get('Content-Length', 0))
