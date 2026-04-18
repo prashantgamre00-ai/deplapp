@@ -3,13 +3,14 @@ Name: depl-webapp
 Version: 0.1.0
 Summary: A web-based tool tracking system built with Flask and SQLAlchemy
 Author: Prashant Gamre
-Requires-Python: >=3.8
+Requires-Python: >=3.11
 Description-Content-Type: text/markdown
 Requires-Dist: flask==2.3.3
 Requires-Dist: flask-sqlalchemy==3.0.5
 Requires-Dist: numpy>=1.24.0
 Requires-Dist: pandas>=2.0.0
 Requires-Dist: openpyxl==3.1.2
+Requires-Dist: psycopg2-binary>=2.9.11
 
 # Tools Tracker Flask Application
 

@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, make_response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from dotenv import load_dotenv
 import io
 import os
 
+load_dotenv() 
 # Try to import pandas, but handle gracefully if not available
 try:
     import pandas as pd
@@ -14,11 +16,20 @@ except ImportError:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-# Use in-memory database for serverless environment
+
+# Supabase / PostgreSQL configuration
+# Set the DATABASE_URL environment variable to your Supabase connection string.
+# Example: postgresql://postgres.xxxxx:password@aws-0-us-west-1.pooler.supabase.com:6543/postgres
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///tools_tracker.db')
-if 'vercel' in os.environ.get('VERCEL_ENV', '').lower() or os.path.exists('/tmp'):
-    # Use /tmp for Vercel serverless environment
+
+# SQLAlchemy 1.4+ requires 'postgresql://' instead of 'postgres://'
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+# Fallback to /tmp for local sqlite when running in Vercel serverless (if no DATABASE_URL provided)
+if ('vercel' in os.environ.get('VERCEL_ENV', '').lower() or os.path.exists('/tmp')) and database_url.startswith('sqlite:///'):
     database_url = 'sqlite:////tmp/tools_tracker.db'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
