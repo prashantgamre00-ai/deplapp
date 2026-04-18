@@ -25,19 +25,20 @@
                             <input type="text" class="form-control" value="{{ frt_name }}" readonly>
                         </div>
                         <div class="col-md-4">
-                            <a href="{{ url_for('select_location') }}" class="btn btn-outline-secondary mt-4">Change Location</a>
+                            <a href="{{ url_for('select_location') }}" class="btn btn-outline-secondary mt-4">Change
+                                Location</a>
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="tool_type" class="form-label">Type of Tools</label>
                         <select class="form-select" id="tool_type" name="tool_type" required>
                             <option value="">Select Tool Type...</option>
-                            <option value="CABLE LOC">CABLE LOC</option>
-                            <option value="LASER LIGH">LASER LIGH</option>
+                            <option value="CABLE LOCATOR">CABLE LOCATOR</option>
+                            <option value="LASER LIGHT">LASER LIGHT</option>
                             <option value="OTDR">OTDR</option>
-                            <option value="SPLICING M">SPLICING M</option>
-                            <option value="POWER MET">POWER MET</option>
+                            <option value="SPLICING MACHINE">SPLICING MACHINE</option>
+                            <option value="POWER METER">POWER METER</option>
                             <option value="Fiber Cleave">Fiber Cleave</option>
                             <option value="Live Fiber de">Live Fiber de</option>
                             <option value="striper">striper</option>
@@ -45,24 +46,27 @@
                         </select>
                         <div class="form-text">Select the type of tool to add</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="serial_number" class="form-label">Serial Number</label>
-                        <input type="text" class="form-control" id="serial_number" name="serial_number" placeholder="Enter serial number (optional)">
+                        <input type="text" class="form-control" id="serial_number" name="serial_number"
+                            placeholder="Enter serial number (optional)">
                         <div class="form-text">Enter the serial number or unique identifier for this tool</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="remarks" class="form-label">Remarks</label>
-                        <textarea class="form-control" id="remarks" name="remarks" rows="3" placeholder="Enter any additional notes or remarks (optional)"></textarea>
+                        <textarea class="form-control" id="remarks" name="remarks" rows="3"
+                            placeholder="Enter any additional notes or remarks (optional)"></textarea>
                         <div class="form-text">Add any additional information about the tool</div>
                     </div>
-                    
+
                     <div class="d-flex justify-content-between">
                         <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
                         <div>
                             <button type="submit" class="btn btn-primary me-2">Add Tool</button>
-                            <button type="submit" class="btn btn-success" name="add_another" value="true">Add & Add Another</button>
+                            <button type="submit" class="btn btn-success" name="add_another" value="true">Add & Add
+                                Another</button>
                         </div>
                     </div>
                 </form>
@@ -78,32 +82,34 @@
                 <h6 class="mb-0">Recent Tools for {{ zone_name }} - {{ frt_name }}</h6>
             </div>
             <div class="card-body">
-                {% set recent_tools = tools|selectattr('zone_name', 'equalto', zone_name)|selectattr('frt_name', 'equalto', frt_name)|list %}
+                {% set recent_tools = tools|selectattr('zone_name', 'equalto', zone_name)|selectattr('frt_name',
+                'equalto', frt_name)|list %}
                 {% if recent_tools %}
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Tool Type</th>
-                                    <th>Serial Number</th>
-                                    <th>Remarks</th>
-                                    <th>Added</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for tool in recent_tools[-5:] %}
-                                    <tr>
-                                        <td>{{ tool.tool_type }}</td>
-                                        <td>{{ tool.serial_number or '-' }}</td>
-                                        <td>{{ tool.remarks[:50] + '...' if tool.remarks and tool.remarks|length > 50 else (tool.remarks or '-') }}</td>
-                                        <td>{{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Tool Type</th>
+                                <th>Serial Number</th>
+                                <th>Remarks</th>
+                                <th>Added</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tool in recent_tools[-5:] %}
+                            <tr>
+                                <td>{{ tool.tool_type }}</td>
+                                <td>{{ tool.serial_number or '-' }}</td>
+                                <td>{{ tool.remarks[:50] + '...' if tool.remarks and tool.remarks|length > 50 else
+                                    (tool.remarks or '-') }}</td>
+                                <td>{{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                    <p class="text-muted">No tools added yet for this location.</p>
+                <p class="text-muted">No tools added yet for this location.</p>
                 {% endif %}
             </div>
         </div>
