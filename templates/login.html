@@ -37,7 +37,8 @@
         padding: 2rem 1.5rem;
     }
 
-    .form-control, .form-select {
+    .form-control,
+    .form-select {
         border-radius: 12px;
         border: 2px solid #e0e0e0;
         padding: 1rem;
@@ -46,7 +47,8 @@
         min-height: 50px;
     }
 
-    .form-control:focus, .form-select:focus {
+    .form-control:focus,
+    .form-select:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         transform: translateY(-2px);
@@ -94,6 +96,7 @@
             opacity: 0;
             transform: translateY(-10px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -117,7 +120,7 @@
         padding: 1rem;
         background: white;
         border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .stat-number {
@@ -212,9 +215,11 @@
             font-size: 1.25rem;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             padding: 0.875rem;
-            font-size: 16px; /* Prevents zoom on iOS */
+            font-size: 16px;
+            /* Prevents zoom on iOS */
         }
 
         .btn-login {
@@ -245,7 +250,10 @@
 
     /* Touch devices */
     @media (hover: none) and (pointer: coarse) {
-        .form-control, .form-select, .btn-login {
+
+        .form-control,
+        .form-select,
+        .btn-login {
             min-height: 44px;
         }
     }
@@ -269,7 +277,7 @@
                     <select class="form-select form-select-lg" id="zone_name" name="zone_name" required>
                         <option value="">Choose your zone...</option>
                         <option value="COASTAL">COASTAL</option>
-                        <option value="NAVI MUME">NAVI MUME</option>
+                        <option value="NAVI MUMBAI">NAVI MUMBAI</option>
                         <option value="NORTH GO">NORTH GO</option>
                         <option value="SOUTH GOA">SOUTH GOA</option>
                         <option value="KALYAN">KALYAN</option>
@@ -279,7 +287,7 @@
                     </select>
                     <div class="form-text">Select your work zone</div>
                 </div>
-                
+
                 <div class="mb-4">
                     <label for="frt_name" class="form-label">
                         <i class="bi bi-pin-map"></i> Select FRT Location
@@ -289,7 +297,7 @@
                     </select>
                     <div class="form-text">FRT locations will appear based on your zone selection</div>
                 </div>
-                
+
                 <div class="location-preview" id="locationPreview">
                     <h6 class="mb-3">Selected Location:</h6>
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
@@ -310,12 +318,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="btn btn-login btn-lg mt-4" id="loginBtn" disabled>
                     <i class="bi bi-box-arrow-in-right"></i> Enter Dashboard
                 </button>
             </form>
-            
+
             <div class="text-center mt-4">
                 <small class="text-muted">
                     <i class="bi bi-shield-check"></i> Secure location-based access
@@ -326,91 +334,91 @@
 </div>
 
 <script>
-const zoneFrtMapping = {
-    'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
-    'NAVI MUME': ['BELAPUR-1', 'AIROLI', 'SHILPHATA', 'NAVI MUMBAI-SD'],
-    'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
-    'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
-    'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
-    'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BELAPUR-2', 'SANPADA-1', 'SANPADA-2', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
-    'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
-    'OFFICE': ['OFFICE']
-};
+    const zoneFrtMapping = {
+        'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
+        'NAVI MUMBAI': ['BELAPUR-1', 'BELAPUR-2', 'AIROLI', 'SANPADA-1', 'SANPADA-2', 'SHILPHATA', 'NAVI MUMBAI-SD', 'KOPARKHAIRANE'],
+        'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
+        'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
+        'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
+        'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
+        'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
+        'OFFICE': ['OFFICE']
+    };
 
-// Sample data for demonstration
-const locationData = {
-    'COASTAL': { 'KHED': 12, 'JAMSANDE': 8, 'MURUD': 15 },
-    'NAVI MUME': { 'BELAPUR-1': 20, 'AIROLI': 18, 'SHILPHATA': 10, 'NAVI MUMBAI-SD': 25 },
-    'NORTH GO': { 'MAPUSA': 14, 'PANJIM': 22, 'GOA CIVIL': 16 },
-    'SOUTH GOA': { 'MADGAON': 19, 'VERNA': 13, 'CONCOLIM': 11, 'SANQUELIM': 17 },
-    'KALYAN': { 'SHRINGARTALE': 9, 'AMBADI': 7, 'KALYAN-SD': 12 },
-    'VASAI': { 'BADLAPUR': 15, 'BHIWANDI': 18, 'KALYAN': 14, 'BELAPUR-2': 16, 'SANPADA-1': 20, 'SANPADA-2': 19, 'BOISAR': 13, 'VASAI': 21, 'TALASARI': 10, 'VIRAR': 17 },
-    'RAJKOT': { 'DHARI': 8, 'KUDAL': 11, 'MAHAD': 9, 'ALIBAG': 12, 'CHIPLUN': 14, 'RAJAPUR': 10 },
-    'OFFICE': { 'OFFICE': 25 }
-};
+    // Sample data for demonstration
+    const locationData = {
+        'COASTAL': { 'KHED': 12, 'JAMSANDE': 8, 'MURUD': 15 },
+        'NAVI MUMBAI': { 'BELAPUR-1': 20, 'AIROLI': 18, 'SHILPHATA': 10, 'NAVI MUMBAI-SD': 25 },
+        'NORTH GO': { 'MAPUSA': 14, 'PANJIM': 22, 'GOA CIVIL': 16 },
+        'SOUTH GOA': { 'MADGAON': 19, 'VERNA': 13, 'CONCOLIM': 11, 'SANQUELIM': 17 },
+        'KALYAN': { 'SHRINGARTALE': 9, 'AMBADI': 7, 'KALYAN-SD': 12 },
+        'VASAI': { 'BADLAPUR': 15, 'BHIWANDI': 18, 'KALYAN': 14, 'BELAPUR-2': 16, 'SANPADA-1': 20, 'SANPADA-2': 19, 'BOISAR': 13, 'VASAI': 21, 'TALASARI': 10, 'VIRAR': 17 },
+        'RAJKOT': { 'DHARI': 8, 'KUDAL': 11, 'MAHAD': 9, 'ALIBAG': 12, 'CHIPLUN': 14, 'RAJAPUR': 10 },
+        'OFFICE': { 'OFFICE': 25 }
+    };
 
-document.getElementById('zone_name').addEventListener('change', function() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const selectedZone = zoneSelect.value;
-    
-    // Reset FRT selection
-    frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
-    frtSelect.disabled = !selectedZone;
-    
-    if (selectedZone && zoneFrtMapping[selectedZone]) {
-        zoneFrtMapping[selectedZone].forEach(function(frt) {
-            const option = document.createElement('option');
-            option.value = frt;
-            option.textContent = frt;
-            frtSelect.appendChild(option);
-        });
+    document.getElementById('zone_name').addEventListener('change', function () {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const selectedZone = zoneSelect.value;
+
+        // Reset FRT selection
+        frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
+        frtSelect.disabled = !selectedZone;
+
+        if (selectedZone && zoneFrtMapping[selectedZone]) {
+            zoneFrtMapping[selectedZone].forEach(function (frt) {
+                const option = document.createElement('option');
+                option.value = frt;
+                option.textContent = frt;
+                frtSelect.appendChild(option);
+            });
+        }
+
+        updateLocationPreview();
+        updateLoginButton();
+    });
+
+    document.getElementById('frt_name').addEventListener('change', function () {
+        updateLocationPreview();
+        updateLoginButton();
+    });
+
+    function updateLocationPreview() {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const preview = document.getElementById('locationPreview');
+        const toolsCount = document.getElementById('toolsCount');
+        const typesCount = document.getElementById('typesCount');
+
+        if (zoneSelect.value && frtSelect.value) {
+            preview.classList.add('show');
+
+            // Update stats
+            const tools = locationData[zoneSelect.value]?.[frtSelect.value] || 0;
+            const types = Math.floor(Math.random() * 8) + 3;
+
+            toolsCount.textContent = tools;
+            typesCount.textContent = types;
+
+            // Update badges
+            preview.querySelector('.badge.bg-primary').textContent = zoneSelect.value;
+            preview.querySelector('.badge.bg-info').textContent = frtSelect.value;
+        } else {
+            preview.classList.remove('show');
+        }
     }
-    
-    updateLocationPreview();
-    updateLoginButton();
-});
 
-document.getElementById('frt_name').addEventListener('change', function() {
-    updateLocationPreview();
-    updateLoginButton();
-});
+    function updateLoginButton() {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const loginBtn = document.getElementById('loginBtn');
 
-function updateLocationPreview() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const preview = document.getElementById('locationPreview');
-    const toolsCount = document.getElementById('toolsCount');
-    const typesCount = document.getElementById('typesCount');
-    
-    if (zoneSelect.value && frtSelect.value) {
-        preview.classList.add('show');
-        
-        // Update stats
-        const tools = locationData[zoneSelect.value]?.[frtSelect.value] || 0;
-        const types = Math.floor(Math.random() * 8) + 3;
-        
-        toolsCount.textContent = tools;
-        typesCount.textContent = types;
-        
-        // Update badges
-        preview.querySelector('.badge.bg-primary').textContent = zoneSelect.value;
-        preview.querySelector('.badge.bg-info').textContent = frtSelect.value;
-    } else {
-        preview.classList.remove('show');
+        if (zoneSelect.value && frtSelect.value) {
+            loginBtn.disabled = false;
+        } else {
+            loginBtn.disabled = true;
+        }
     }
-}
-
-function updateLoginButton() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const loginBtn = document.getElementById('loginBtn');
-    
-    if (zoneSelect.value && frtSelect.value) {
-        loginBtn.disabled = false;
-    } else {
-        loginBtn.disabled = true;
-    }
-}
 </script>
 {% endblock %}
