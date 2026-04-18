@@ -83,11 +83,11 @@ def dashboard():
         all_tools = []
     
     # Define all possible zones and FRTs for complete view
-    all_zones = ['COASTAL', 'NAVI MUME', 'NORTH GO', 'SOUTH GOA', 'KALYAN', 'VASAI', 'RAJKOT', 'OFFICE']
+    all_zones = ['COASTAL', 'NAVI MUMBAI', 'NORTH GOA', 'SOUTH GOA', 'KALYAN', 'VASAI', 'RAJKOT', 'OFFICE']
     all_frts = {
         'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
-        'NAVI MUME': ['BELAPUR-1','BELAPUR-2','AIROLI','SANPADA-1', 'SANPADA-2', 'SHILPHATA', 'NAVI MUMBAI-SD','KOPARKHAIRANE'],
-        'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
+        'NAVI MUMBAI': ['BELAPUR-1','BELAPUR-2','AIROLI','SANPADA-1', 'SANPADA-2', 'SHILPHATA', 'NAVI MUMBAI-SD','KOPARKHAIRANE'],
+        'NORTH GOA': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
         'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
         'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
         'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],

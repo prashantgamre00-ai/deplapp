@@ -15,18 +15,22 @@
                         <label for="zone_name" class="form-label">Zone Name</label>
                         <select class="form-select" id="zone_name" name="zone_name" required>
                             <option value="">Select Zone...</option>
-                            <option value="COASTAL" {% if tool.zone_name == 'COASTAL' %}selected{% endif %}>COASTAL</option>
-                            <option value="NAVI MUME" {% if tool.zone_name == 'NAVI MUME' %}selected{% endif %}>NAVI MUME</option>
-                            <option value="NORTH GO" {% if tool.zone_name == 'NORTH GO' %}selected{% endif %}>NORTH GO</option>
-                            <option value="SOUTH GOA" {% if tool.zone_name == 'SOUTH GOA' %}selected{% endif %}>SOUTH GOA</option>
-                            <option value="KALYAN" {% if tool.zone_name == 'KALYAN' %}selected{% endif %}>KALYAN</option>
-                            <option value="VASAI" {% if tool.zone_name == 'VASAI' %}selected{% endif %}>VASAI</option>
-                            <option value="RAJKOT" {% if tool.zone_name == 'RAJKOT' %}selected{% endif %}>RAJKOT</option>
-                            <option value="OFFICE" {% if tool.zone_name == 'OFFICE' %}selected{% endif %}>OFFICE</option>
+                            <option value="COASTAL" {% if tool.zone_name=='COASTAL' %}selected{% endif %}>COASTAL
+                            </option>
+                            <option value="NAVI MUMBAI" {% if tool.zone_name=='NAVI MUMBAI' %}selected{% endif %}>NAVI
+                                MUMBAI</option>
+                            <option value="NORTH GOA" {% if tool.zone_name=='NORTH GOA' %}selected{% endif %}>NORTH GOA
+                            </option>
+                            <option value="SOUTH GOA" {% if tool.zone_name=='SOUTH GOA' %}selected{% endif %}>SOUTH GOA
+                            </option>
+                            <option value="KALYAN" {% if tool.zone_name=='KALYAN' %}selected{% endif %}>KALYAN</option>
+                            <option value="VASAI" {% if tool.zone_name=='VASAI' %}selected{% endif %}>VASAI</option>
+                            <option value="RAJKOT" {% if tool.zone_name=='RAJKOT' %}selected{% endif %}>RAJKOT</option>
+                            <option value="OFFICE" {% if tool.zone_name=='OFFICE' %}selected{% endif %}>OFFICE</option>
                         </select>
                         <div class="form-text">Enter the zone name (e.g., COASTAL, NORTH GO, SOUTH GOA)</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="frt_name" class="form-label">FRT Name</label>
                         <select class="form-select" id="frt_name" name="frt_name" required>
@@ -34,48 +38,61 @@
                         </select>
                         <div class="form-text">FRT locations will appear based on your zone selection</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="tool_type" class="form-label">Type of Tools</label>
                         <select class="form-select" id="tool_type" name="tool_type" required>
                             <option value="">Select Tool Type...</option>
-                            <option value="CABLE LOC" {% if tool.tool_type == 'CABLE LOC' %}selected{% endif %}>CABLE LOC</option>
-                            <option value="LASER LIGH" {% if tool.tool_type == 'LASER LIGH' %}selected{% endif %}>LASER LIGH</option>
-                            <option value="OTDR" {% if tool.tool_type == 'OTDR' %}selected{% endif %}>OTDR</option>
-                            <option value="SPLICING M" {% if tool.tool_type == 'SPLICING M' %}selected{% endif %}>SPLICING M</option>
-                            <option value="POWER MET" {% if tool.tool_type == 'POWER MET' %}selected{% endif %}>POWER MET</option>
-                            <option value="Fiber Cleave" {% if tool.tool_type == 'Fiber Cleave' %}selected{% endif %}>Fiber Cleave</option>
-                            <option value="Live Fiber de" {% if tool.tool_type == 'Live Fiber de' %}selected{% endif %}>Live Fiber de</option>
-                            <option value="striper" {% if tool.tool_type == 'striper' %}selected{% endif %}>striper</option>
-                            <option value="Ladder" {% if tool.tool_type == 'Ladder' %}selected{% endif %}>Ladder</option>
+                            <option value="CABLE LOC" {% if tool.tool_type=='CABLE LOC' %}selected{% endif %}>CABLE LOC
+                            </option>
+                            <option value="LASER LIGH" {% if tool.tool_type=='LASER LIGH' %}selected{% endif %}>LASER
+                                LIGH</option>
+                            <option value="OTDR" {% if tool.tool_type=='OTDR' %}selected{% endif %}>OTDR</option>
+                            <option value="SPLICING M" {% if tool.tool_type=='SPLICING M' %}selected{% endif %}>SPLICING
+                                M</option>
+                            <option value="POWER MET" {% if tool.tool_type=='POWER MET' %}selected{% endif %}>POWER MET
+                            </option>
+                            <option value="Fiber Cleave" {% if tool.tool_type=='Fiber Cleave' %}selected{% endif %}>
+                                Fiber Cleave</option>
+                            <option value="Live Fiber de" {% if tool.tool_type=='Live Fiber de' %}selected{% endif %}>
+                                Live Fiber de</option>
+                            <option value="striper" {% if tool.tool_type=='striper' %}selected{% endif %}>striper
+                            </option>
+                            <option value="Ladder" {% if tool.tool_type=='Ladder' %}selected{% endif %}>Ladder</option>
                         </select>
                         <div class="form-text">Enter the tool type (e.g., CABLE LOC, OTDR, SPLICING M)</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="serial_number" class="form-label">Serial Number</label>
-                        <input type="text" class="form-control" id="serial_number" name="serial_number" value="{{ tool.serial_number or '' }}" placeholder="Enter serial number (optional)">
+                        <input type="text" class="form-control" id="serial_number" name="serial_number"
+                            value="{{ tool.serial_number or '' }}" placeholder="Enter serial number (optional)">
                         <div class="form-text">Enter the serial number or unique identifier for this tool</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="remarks" class="form-label">Remarks</label>
-                        <textarea class="form-control" id="remarks" name="remarks" rows="3" placeholder="Enter any additional notes or remarks (optional)">{{ tool.remarks or '' }}</textarea>
+                        <textarea class="form-control" id="remarks" name="remarks" rows="3"
+                            placeholder="Enter any additional notes or remarks (optional)">{{ tool.remarks or '' }}</textarea>
                         <div class="form-text">Add any additional information about the tool</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Created At</label>
-                        <input type="text" class="form-control" value="{{ tool.created_at.strftime('%Y-%m-%d %H:%M:%S') if tool.created_at else '' }}" readonly>
+                        <input type="text" class="form-control"
+                            value="{{ tool.created_at.strftime('%Y-%m-%d %H:%M:%S') if tool.created_at else '' }}"
+                            readonly>
                         <div class="form-text">Tool creation timestamp (read-only)</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Last Updated</label>
-                        <input type="text" class="form-control" value="{{ tool.updated_at.strftime('%Y-%m-%d %H:%M:%S') if tool.updated_at else '' }}" readonly>
+                        <input type="text" class="form-control"
+                            value="{{ tool.updated_at.strftime('%Y-%m-%d %H:%M:%S') if tool.updated_at else '' }}"
+                            readonly>
                         <div class="form-text">Last update timestamp (read-only)</div>
                     </div>
-                    
+
                     <div class="d-flex justify-content-between">
                         <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary">Update Tool</button>
@@ -96,15 +113,18 @@
                 <div class="row">
                     <div class="col-md-4">
                         <strong>Zone Names:</strong><br>
-                        <small class="text-muted">COASTAL, NAVI MUME, NORTH GO, SOUTH GOA, KALYAN, VASAI, RAJKOT, OFFICE</small>
+                        <small class="text-muted">COASTAL, NAVI MUME, NORTH GO, SOUTH GOA, KALYAN, VASAI, RAJKOT,
+                            OFFICE</small>
                     </div>
                     <div class="col-md-4">
                         <strong>FRT Names:</strong><br>
-                        <small class="text-muted">KHED, JAMSANDE, MURUD, BELAPUR-1, MAPUSA, MADGAON, VERNA, BADLAPUR</small>
+                        <small class="text-muted">KHED, JAMSANDE, MURUD, BELAPUR-1, MAPUSA, MADGAON, VERNA,
+                            BADLAPUR</small>
                     </div>
                     <div class="col-md-4">
                         <strong>Tool Types:</strong><br>
-                        <small class="text-muted">CABLE LOC, LASER LIGH, OTDR, SPLICING M, POWER MET, Fiber Cleave</small>
+                        <small class="text-muted">CABLE LOC, LASER LIGH, OTDR, SPLICING M, POWER MET, Fiber
+                            Cleave</small>
                     </div>
                 </div>
             </div>
@@ -113,57 +133,57 @@
 </div>
 
 <script>
-const zoneFrtMapping = {
-    'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
-    'NAVI MUME': ['BELAPUR-1', 'AIROLI', 'SHILPHATA', 'NAVI MUMBAI-SD'],
-    'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
-    'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
-    'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
-    'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BELAPUR-2', 'SANPADA-1', 'SANPADA-2', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
-    'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
-    'OFFICE': ['OFFICE']
-};
+    const zoneFrtMapping = {
+        'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
+        'NAVI MUMBAI': ['BELAPUR-1', 'BELAPUR-2', 'AIROLI', 'SANPADA-1', 'SANPADA-2', 'SHILPHATA', 'NAVI MUMBAI-SD', 'KOPARKHAIRANE'],
+        'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
+        'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
+        'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
+        'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
+        'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
+        'OFFICE': ['OFFICE']
+    };
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const currentZone = zoneSelect.value;
-    const currentFRT = '{{ tool.frt_name }}';
-    
-    // Load FRT options for current zone
-    if (currentZone && zoneFrtMapping[currentZone]) {
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const currentZone = zoneSelect.value;
+        const currentFRT = '{{ tool.frt_name }}';
+
+        // Load FRT options for current zone
+        if (currentZone && zoneFrtMapping[currentZone]) {
+            frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
+            zoneFrtMapping[currentZone].forEach(function (frt) {
+                const option = document.createElement('option');
+                option.value = frt;
+                option.textContent = frt;
+                if (frt === currentFRT) {
+                    option.selected = true;
+                }
+                frtSelect.appendChild(option);
+            });
+            frtSelect.disabled = false;
+        }
+    });
+
+    document.getElementById('zone_name').addEventListener('change', function () {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const selectedZone = zoneSelect.value;
+
+        // Reset FRT selection
         frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
-        zoneFrtMapping[currentZone].forEach(function(frt) {
-            const option = document.createElement('option');
-            option.value = frt;
-            option.textContent = frt;
-            if (frt === currentFRT) {
-                option.selected = true;
-            }
-            frtSelect.appendChild(option);
-        });
-        frtSelect.disabled = false;
-    }
-});
+        frtSelect.disabled = !selectedZone;
 
-document.getElementById('zone_name').addEventListener('change', function() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const selectedZone = zoneSelect.value;
-    
-    // Reset FRT selection
-    frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
-    frtSelect.disabled = !selectedZone;
-    
-    if (selectedZone && zoneFrtMapping[selectedZone]) {
-        zoneFrtMapping[selectedZone].forEach(function(frt) {
-            const option = document.createElement('option');
-            option.value = frt;
-            option.textContent = frt;
-            frtSelect.appendChild(option);
-        });
-    }
-});
+        if (selectedZone && zoneFrtMapping[selectedZone]) {
+            zoneFrtMapping[selectedZone].forEach(function (frt) {
+                const option = document.createElement('option');
+                option.value = frt;
+                option.textContent = frt;
+                frtSelect.appendChild(option);
+            });
+        }
+    });
 </script>
 {% endblock %}

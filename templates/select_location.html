@@ -8,11 +8,13 @@
         max-width: 500px;
         margin: 50px auto;
     }
+
     .location-card {
         border: none;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
     }
+
     .zone-section {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -20,24 +22,29 @@
         border-radius: 10px 10px 0 0;
         text-align: center;
     }
+
     .frt-section {
         padding: 30px;
     }
+
     .form-select:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     }
+
     .btn-continue {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         padding: 12px 30px;
         font-weight: 600;
     }
+
     .btn-continue:hover {
         background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
+
     .location-display {
         background-color: #f8f9fa;
         padding: 15px;
@@ -64,8 +71,8 @@
                     <select class="form-select form-select-lg" id="zone_name" name="zone_name" required>
                         <option value="">Choose your zone...</option>
                         <option value="COASTAL">COASTAL</option>
-                        <option value="NAVI MUME">NAVI MUME</option>
-                        <option value="NORTH GO">NORTH GO</option>
+                        <option value="NAVI MUMBAI">NAVI MUMBAI</option>
+                        <option value="NORTH GOA">NORTH GOA</option>
                         <option value="SOUTH GOA">SOUTH GOA</option>
                         <option value="KALYAN">KALYAN</option>
                         <option value="VASAI">VASAI</option>
@@ -73,7 +80,7 @@
                         <option value="OFFICE">OFFICE</option>
                     </select>
                 </div>
-                
+
                 <div class="mb-4">
                     <label for="frt_name" class="form-label fw-bold">
                         <i class="bi bi-pin-map"></i> Select FRT Location
@@ -85,7 +92,7 @@
                         <i class="bi bi-info-circle"></i> FRT locations will appear based on your zone selection
                     </div>
                 </div>
-                
+
                 <div class="location-display" id="locationDisplay" style="display: none;">
                     <h6 class="mb-2">Selected Location:</h6>
                     <div class="d-flex justify-content-between align-items-center">
@@ -96,16 +103,16 @@
                         <i class="bi bi-check-circle-fill text-success fs-4"></i>
                     </div>
                 </div>
-                
+
                 <div class="d-grid gap-2 mt-4">
                     <button type="submit" class="btn btn-primary btn-continue btn-lg" id="continueBtn" disabled>
                         <i class="bi bi-arrow-right-circle"></i> Continue to Add Tools
                     </button>
                 </div>
             </form>
-            
+
             <hr class="my-4">
-            
+
             <div class="text-center">
                 <p class="mb-2">Or use traditional method:</p>
                 <a href="{{ url_for('add_tool') }}" class="btn btn-outline-secondary">
@@ -117,70 +124,70 @@
 </div>
 
 <script>
-const zoneFrtMapping = {
-    'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
-    'NAVI MUME': ['BELAPUR-1', 'AIROLI', 'SHILPHATA', 'NAVI MUMBAI-SD'],
-    'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
-    'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
-    'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
-    'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BELAPUR-2', 'SANPADA-1', 'SANPADA-2', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
-    'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
-    'OFFICE': ['OFFICE']
-};
+    const zoneFrtMapping = {
+        'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
+        'NAVI MUMBAI': ['BELAPUR-1', 'BELAPUR-2', 'AIROLI', 'SANPADA-1', 'SANPADA-2', 'SHILPHATA', 'NAVI MUMBAI-SD', 'KOPARKHAIRANE'],
+        'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
+        'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
+        'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
+        'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
+        'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
+        'OFFICE': ['OFFICE']
+    };
 
-document.getElementById('zone_name').addEventListener('change', function() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const selectedZone = zoneSelect.value;
-    
-    // Reset FRT selection
-    frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
-    frtSelect.disabled = !selectedZone;
-    
-    if (selectedZone && zoneFrtMapping[selectedZone]) {
-        zoneFrtMapping[selectedZone].forEach(function(frt) {
-            const option = document.createElement('option');
-            option.value = frt;
-            option.textContent = frt;
-            frtSelect.appendChild(option);
-        });
+    document.getElementById('zone_name').addEventListener('change', function () {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const selectedZone = zoneSelect.value;
+
+        // Reset FRT selection
+        frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
+        frtSelect.disabled = !selectedZone;
+
+        if (selectedZone && zoneFrtMapping[selectedZone]) {
+            zoneFrtMapping[selectedZone].forEach(function (frt) {
+                const option = document.createElement('option');
+                option.value = frt;
+                option.textContent = frt;
+                frtSelect.appendChild(option);
+            });
+        }
+
+        updateLocationDisplay();
+        updateContinueButton();
+    });
+
+    document.getElementById('frt_name').addEventListener('change', function () {
+        updateLocationDisplay();
+        updateContinueButton();
+    });
+
+    function updateLocationDisplay() {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const display = document.getElementById('locationDisplay');
+        const displayZone = document.getElementById('displayZone');
+        const displayFRT = document.getElementById('displayFRT');
+
+        if (zoneSelect.value && frtSelect.value) {
+            displayZone.textContent = zoneSelect.value;
+            displayFRT.textContent = frtSelect.value;
+            display.style.display = 'block';
+        } else {
+            display.style.display = 'none';
+        }
     }
-    
-    updateLocationDisplay();
-    updateContinueButton();
-});
 
-document.getElementById('frt_name').addEventListener('change', function() {
-    updateLocationDisplay();
-    updateContinueButton();
-});
+    function updateContinueButton() {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const continueBtn = document.getElementById('continueBtn');
 
-function updateLocationDisplay() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const display = document.getElementById('locationDisplay');
-    const displayZone = document.getElementById('displayZone');
-    const displayFRT = document.getElementById('displayFRT');
-    
-    if (zoneSelect.value && frtSelect.value) {
-        displayZone.textContent = zoneSelect.value;
-        displayFRT.textContent = frtSelect.value;
-        display.style.display = 'block';
-    } else {
-        display.style.display = 'none';
+        if (zoneSelect.value && frtSelect.value) {
+            continueBtn.disabled = false;
+        } else {
+            continueBtn.disabled = true;
+        }
     }
-}
-
-function updateContinueButton() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const continueBtn = document.getElementById('continueBtn');
-    
-    if (zoneSelect.value && frtSelect.value) {
-        continueBtn.disabled = false;
-    } else {
-        continueBtn.disabled = true;
-    }
-}
 </script>
 {% endblock %}

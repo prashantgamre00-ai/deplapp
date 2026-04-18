@@ -16,8 +16,8 @@
                         <select class="form-select" id="zone_name" name="zone_name" required>
                             <option value="">Select Zone...</option>
                             <option value="COASTAL">COASTAL</option>
-                            <option value="NAVI MUME">NAVI MUME</option>
-                            <option value="NORTH GO">NORTH GO</option>
+                            <option value="NAVI MUMBAI">NAVI MUMBAI</option>
+                            <option value="NORTH GOA">NORTH GOA</option>
                             <option value="SOUTH GOA">SOUTH GOA</option>
                             <option value="KALYAN">KALYAN</option>
                             <option value="VASAI">VASAI</option>
@@ -26,7 +26,7 @@
                         </select>
                         <div class="form-text">Enter the zone name (e.g., COASTAL, NORTH GO, SOUTH GOA)</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="frt_name" class="form-label">FRT Name</label>
                         <select class="form-select" id="frt_name" name="frt_name" required>
@@ -34,7 +34,7 @@
                         </select>
                         <div class="form-text">FRT locations will appear based on your zone selection</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="tool_type" class="form-label">Type of Tools</label>
                         <select class="form-select" id="tool_type" name="tool_type" required>
@@ -51,19 +51,21 @@
                         </select>
                         <div class="form-text">Enter the tool type (e.g., CABLE LOC, OTDR, SPLICING M)</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="serial_number" class="form-label">Serial Number</label>
-                        <input type="text" class="form-control" id="serial_number" name="serial_number" placeholder="Enter serial number (optional)">
+                        <input type="text" class="form-control" id="serial_number" name="serial_number"
+                            placeholder="Enter serial number (optional)">
                         <div class="form-text">Enter the serial number or unique identifier for this tool</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="remarks" class="form-label">Remarks</label>
-                        <textarea class="form-control" id="remarks" name="remarks" rows="3" placeholder="Enter any additional notes or remarks (optional)"></textarea>
+                        <textarea class="form-control" id="remarks" name="remarks" rows="3"
+                            placeholder="Enter any additional notes or remarks (optional)"></textarea>
                         <div class="form-text">Add any additional information about the tool</div>
                     </div>
-                    
+
                     <div class="d-flex justify-content-between">
                         <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
                         <button type="submit" class="btn btn-primary">Add Tool</button>
@@ -84,8 +86,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <p class="mb-2"><strong>Location-Based Add:</strong></p>
-                        <p class="text-muted small">Select Zone & FRT first, then add multiple tools for the same location</p>
-                        <a href="{{ url_for('select_location') }}" class="btn btn-success btn-sm">Select Location & Add Tool</a>
+                        <p class="text-muted small">Select Zone & FRT first, then add multiple tools for the same
+                            location</p>
+                        <a href="{{ url_for('select_location') }}" class="btn btn-success btn-sm">Select Location & Add
+                            Tool</a>
                     </div>
                     <div class="col-md-6">
                         <p class="mb-2"><strong>Traditional Add:</strong></p>
@@ -98,34 +102,34 @@
 </div>
 
 <script>
-const zoneFrtMapping = {
-    'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
-    'NAVI MUME': ['BELAPUR-1', 'AIROLI', 'SHILPHATA', 'NAVI MUMBAI-SD'],
-    'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
-    'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
-    'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
-    'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BELAPUR-2', 'SANPADA-1', 'SANPADA-2', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
-    'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
-    'OFFICE': ['OFFICE']
-};
+    const zoneFrtMapping = {
+        'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
+        'NAVI MUMBAI': ['BELAPUR-1', 'BELAPUR-2', 'AIROLI', 'SANPADA-1', 'SANPADA-2', 'SHILPHATA', 'NAVI MUMBAI-SD', 'KOPARKHAIRANE'],
+        'NORTH GO': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
+        'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
+        'KALYAN': ['SHRINGARTALE', 'AMBADI', 'KALYAN-SD'],
+        'VASAI': ['BADLAPUR', 'BHIWANDI', 'KALYAN', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
+        'RAJKOT': ['DHARI', 'KUDAL', 'MAHAD', 'ALIBAG', 'CHIPLUN', 'RAJAPUR'],
+        'OFFICE': ['OFFICE']
+    };
 
-document.getElementById('zone_name').addEventListener('change', function() {
-    const zoneSelect = document.getElementById('zone_name');
-    const frtSelect = document.getElementById('frt_name');
-    const selectedZone = zoneSelect.value;
-    
-    // Reset FRT selection
-    frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
-    frtSelect.disabled = !selectedZone;
-    
-    if (selectedZone && zoneFrtMapping[selectedZone]) {
-        zoneFrtMapping[selectedZone].forEach(function(frt) {
-            const option = document.createElement('option');
-            option.value = frt;
-            option.textContent = frt;
-            frtSelect.appendChild(option);
-        });
-    }
-});
+    document.getElementById('zone_name').addEventListener('change', function () {
+        const zoneSelect = document.getElementById('zone_name');
+        const frtSelect = document.getElementById('frt_name');
+        const selectedZone = zoneSelect.value;
+
+        // Reset FRT selection
+        frtSelect.innerHTML = '<option value="">Select FRT location...</option>';
+        frtSelect.disabled = !selectedZone;
+
+        if (selectedZone && zoneFrtMapping[selectedZone]) {
+            zoneFrtMapping[selectedZone].forEach(function (frt) {
+                const option = document.createElement('option');
+                option.value = frt;
+                option.textContent = frt;
+                frtSelect.appendChild(option);
+            });
+        }
+    });
 </script>
 {% endblock %}
