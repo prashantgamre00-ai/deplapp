@@ -1,22 +1,7 @@
-from app import app, db, Tool
+from app import app
 import os
 from http.server import BaseHTTPRequestHandler
 from io import BytesIO
-
-# Initialize database if it doesn't exist
-def init_database():
-    with app.app_context():
-        try:
-            db.create_all()
-            print("Database initialized successfully - v2")
-            # Check if we have any tools
-            tool_count = Tool.query.count()
-            print(f"Current tool count: {tool_count}")
-        except Exception as e:
-            print(f"Database initialization error: {e}")
-
-# Initialize database
-init_database()
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
