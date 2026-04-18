@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, make_response
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from dotenv import load_dotenv
 import io
 import os
+from supabase import create_client, Client
 
 load_dotenv() 
+
 # Try to import pandas, but handle gracefully if not available
 try:
     import pandas as pd
@@ -17,37 +18,33 @@ except ImportError:
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
-# Supabase / PostgreSQL configuration
-# Set the DATABASE_URL environment variable to your Supabase connection string.
-# Example: postgresql://postgres.xxxxx:password@aws-0-us-west-1.pooler.supabase.com:6543/postgres
-database_url = os.environ.get('DATABASE_URL', 'sqlite:///tools_tracker.db')
+# Supabase configuration
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
-# SQLAlchemy 1.4+ requires 'postgresql://' instead of 'postgres://'
-if database_url and database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
+if not SUPABASE_URL or not SUPABASE_KEY:
+    print("Warning: SUPABASE_URL or SUPABASE_KEY is missing!")
 
-# Fallback to /tmp for local sqlite when running in Vercel serverless (if no DATABASE_URL provided)
-if ('vercel' in os.environ.get('VERCEL_ENV', '').lower() or os.path.exists('/tmp')) and database_url.startswith('sqlite:///'):
-    database_url = 'sqlite:////tmp/tools_tracker.db'
+supabase: Client = create_client(SUPABASE_URL or "", SUPABASE_KEY or "")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-class Tool(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    zone_name = db.Column(db.String(100), nullable=False)
-    frt_name = db.Column(db.String(100), nullable=False)
-    tool_type = db.Column(db.String(100), nullable=False)
-    serial_number = db.Column(db.String(100), nullable=True)
-    remarks = db.Column(db.Text, nullable=True)
-    added_by = db.Column(db.String(200), nullable=True)  # Track who added the tool
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+# Wrapper class to make dictionaries behave like SQLAlchemy models in templates
+class Tool:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+        # Parse ISO strings to datetime
+        if hasattr(self, 'created_at') and isinstance(self.created_at, str):
+            try:
+                self.created_at = datetime.fromisoformat(self.created_at.replace('Z', '+00:00')).replace(tzinfo=None)
+            except:
+                pass
+        if hasattr(self, 'updated_at') and isinstance(self.updated_at, str):
+            try:
+                self.updated_at = datetime.fromisoformat(self.updated_at.replace('Z', '+00:00')).replace(tzinfo=None)
+            except:
+                pass
 
     def __repr__(self):
-        return f'<Tool {self.tool_type} - {self.zone_name}>'
+        return f'<Tool {getattr(self, "tool_type", "Unknown")} - {getattr(self, "zone_name", "Unknown")}>'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -78,7 +75,12 @@ def dashboard():
     user_frt = session['user_frt']
     
     # Get all tools for dashboard view (show all zones and FRTs)
-    all_tools = Tool.query.order_by(Tool.zone_name, Tool.frt_name, Tool.created_at.desc()).all()
+    try:
+        response = supabase.table('tool').select('*').order('zone_name').order('frt_name').order('created_at', desc=True).execute()
+        all_tools = [Tool(**item) for item in response.data]
+    except Exception as e:
+        print(f"Error fetching tools: {e}")
+        all_tools = []
     
     # Define all possible zones and FRTs for complete view
     all_zones = ['COASTAL', 'NAVI MUME', 'NORTH GO', 'SOUTH GOA', 'KALYAN', 'VASAI', 'RAJKOT', 'OFFICE']
@@ -134,9 +136,9 @@ def dashboard():
     
     # Process actual tools
     for tool in all_tools:
-        zone = tool.zone_name
-        frt = tool.frt_name
-        tool_type = tool.tool_type
+        zone = getattr(tool, 'zone_name', None)
+        frt = getattr(tool, 'frt_name', None)
+        tool_type = getattr(tool, 'tool_type', None)
         
         # Skip if zone or FRT not in predefined lists
         if zone not in all_zones or frt not in all_frts.get(zone, []):
@@ -174,21 +176,21 @@ def dashboard():
         tool_type_stats[tool_type]['frts'].add(frt)
         
         # Track serial numbers
-        if tool.serial_number:
+        if getattr(tool, 'serial_number', None):
             total_with_serial += 1
             zone_stats[zone]['with_serial'] += 1
             frt_stats[frt_key]['with_serial'] += 1
             tool_type_stats[tool_type]['with_serial'] += 1
         
         # Track remarks
-        if tool.remarks:
+        if getattr(tool, 'remarks', None):
             total_with_remarks += 1
             zone_stats[zone]['with_remarks'] += 1
             frt_stats[frt_key]['with_remarks'] += 1
             tool_type_stats[tool_type]['with_remarks'] += 1
         
         # Track latest and oldest tools
-        if tool.created_at:
+        if getattr(tool, 'created_at', None):
             if zone_stats[zone]['latest_tool'] is None or tool.created_at > zone_stats[zone]['latest_tool'].created_at:
                 zone_stats[zone]['latest_tool'] = tool
             if zone_stats[zone]['oldest_tool'] is None or tool.created_at < zone_stats[zone]['oldest_tool'].created_at:
@@ -248,86 +250,62 @@ def export_excel():
     if 'user_zone' not in session or 'user_frt' not in session:
         return redirect(url_for('login'))
     
-    # Check if pandas is available
     if not PANDAS_AVAILABLE:
         flash('Excel export is not available. Please use CSV export instead.', 'warning')
         return redirect(url_for('dashboard'))
     
-    # Get all tools for export
-    all_tools = Tool.query.order_by(Tool.zone_name, Tool.frt_name, Tool.created_at.desc()).all()
+    try:
+        response = supabase.table('tool').select('*').order('zone_name').order('frt_name').order('created_at', desc=True).execute()
+        all_tools = [Tool(**item) for item in response.data]
+    except Exception as e:
+        print(f"Error fetching tools: {e}")
+        all_tools = []
     
-    # Prepare data for Excel
     data = []
     for tool in all_tools:
         data.append({
-            'Zone': tool.zone_name,
-            'FRT': tool.frt_name,
-            'Tool Type': tool.tool_type,
-            'Serial Number': tool.serial_number or '',
-            'Remarks': tool.remarks or '',
-            'Created At': tool.created_at.strftime('%Y-%m-%d %H:%M:%S') if tool.created_at else '',
-            'Updated At': tool.updated_at.strftime('%Y-%m-%d %H:%M:%S') if tool.updated_at else '',
-            'Added By': session.get('user_zone', 'Unknown')
+            'Zone': getattr(tool, 'zone_name', ''),
+            'FRT': getattr(tool, 'frt_name', ''),
+            'Tool Type': getattr(tool, 'tool_type', ''),
+            'Serial Number': getattr(tool, 'serial_number', '') or '',
+            'Remarks': getattr(tool, 'remarks', '') or '',
+            'Created At': tool.created_at.strftime('%Y-%m-%d %H:%M:%S') if hasattr(tool, 'created_at') and tool.created_at else '',
+            'Updated At': tool.updated_at.strftime('%Y-%m-%d %H:%M:%S') if hasattr(tool, 'updated_at') and tool.updated_at else '',
+            'Added By': getattr(tool, 'added_by', 'Unknown')
         })
     
-    # Create DataFrame
     df = pd.DataFrame(data)
     
-    # Create Excel file in memory
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, sheet_name='Tools Inventory', index=False)
-        
-        # Get the workbook and worksheet for formatting
         workbook = writer.book
         worksheet = writer.sheets['Tools Inventory']
         
-        # Adjust column widths
         column_widths = {
-            'A': 15,  # Zone
-            'B': 20,  # FRT
-            'C': 20,  # Tool Type
-            'D': 20,  # Serial Number
-            'E': 30,  # Remarks
-            'F': 20,  # Created At
-            'G': 20,  # Updated At
-            'H': 15   # Added By
+            'A': 15, 'B': 20, 'C': 20, 'D': 20, 'E': 30, 'F': 20, 'G': 20, 'H': 25
         }
-        
         for col, width in column_widths.items():
             worksheet.column_dimensions[col].width = width
         
-        # Format header row
         for cell in worksheet[1]:
-            cell.font = workbook.openpyxl.styles.Font(bold=True)
-            cell.fill = workbook.openpyxl.styles.PatternFill(
-                start_color="667eea",
-                end_color="667eea",
-                fill_type="solid"
-            )
             cell.font = workbook.openpyxl.styles.Font(bold=True, color="FFFFFF")
+            cell.fill = workbook.openpyxl.styles.PatternFill(start_color="667eea", end_color="667eea", fill_type="solid")
         
-        # Add borders to all cells
         thin_border = workbook.openpyxl.styles.Border(
             left=workbook.openpyxl.styles.Side(style='thin'),
             right=workbook.openpyxl.styles.Side(style='thin'),
             top=workbook.openpyxl.styles.Side(style='thin'),
             bottom=workbook.openpyxl.styles.Side(style='thin')
         )
-        
         for row in worksheet.iter_rows():
             for cell in row:
                 cell.border = thin_border
     
     output.seek(0)
-    
-    # Create response
     response = make_response(output.getvalue())
-    response.headers['Content-Disposition'] = 'attachment; filename=tools_inventory_{}.xlsx'.format(
-        datetime.now().strftime('%Y%m%d_%H%M%S')
-    )
+    response.headers['Content-Disposition'] = 'attachment; filename=tools_inventory_{}.xlsx'.format(datetime.now().strftime('%Y%m%d_%H%M%S'))
     response.headers['Content-type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    
     return response
 
 @app.route('/export/csv')
@@ -335,22 +313,23 @@ def export_csv():
     if 'user_zone' not in session or 'user_frt' not in session:
         return redirect(url_for('login'))
     
-    # Get all tools for export
-    all_tools = Tool.query.order_by(Tool.zone_name, Tool.frt_name, Tool.created_at.desc()).all()
+    try:
+        response = supabase.table('tool').select('*').order('zone_name').order('frt_name').order('created_at', desc=True).execute()
+        all_tools = [Tool(**item) for item in response.data]
+    except Exception as e:
+        print(f"Error fetching tools: {e}")
+        all_tools = []
     
-    # Create CSV content
     csv_content = 'Zone,FRT,Tool Type,Serial Number,Remarks,Created At,Updated At,Added By\n'
     
     for tool in all_tools:
-        csv_content += f'{tool.zone_name},{tool.frt_name},{tool.tool_type},"{tool.serial_number or ""}","{tool.remarks or ""}",{tool.created_at.strftime("%Y-%m-%d %H:%M:%S") if tool.created_at else ""},{tool.updated_at.strftime("%Y-%m-%d %H:%M:%S") if tool.updated_at else ""},{session.get("user_zone", "Unknown")}\n'
+        created_at_str = tool.created_at.strftime("%Y-%m-%d %H:%M:%S") if hasattr(tool, 'created_at') and tool.created_at else ""
+        updated_at_str = tool.updated_at.strftime("%Y-%m-%d %H:%M:%S") if hasattr(tool, 'updated_at') and tool.updated_at else ""
+        csv_content += f'{getattr(tool,"zone_name","")},{getattr(tool,"frt_name","")},{getattr(tool,"tool_type","")},"{getattr(tool,"serial_number","") or ""}","{getattr(tool,"remarks","") or ""}",{created_at_str},{updated_at_str},{getattr(tool,"added_by","Unknown")}\n'
     
-    # Create response
     response = make_response(csv_content)
-    response.headers['Content-Disposition'] = 'attachment; filename=tools_inventory_{}.csv'.format(
-        datetime.now().strftime('%Y%m%d_%H%M%S')
-    )
+    response.headers['Content-Disposition'] = 'attachment; filename=tools_inventory_{}.csv'.format(datetime.now().strftime('%Y%m%d_%H%M%S'))
     response.headers['Content-type'] = 'text/csv'
-    
     return response
 
 @app.route('/')
@@ -374,28 +353,24 @@ def add_tool():
                 flash('Tool Type is required!', 'error')
                 return render_template('add_tool.html')
             
-            new_tool = Tool(
-                zone_name=session['user_zone'], 
-                frt_name=session['user_frt'], 
-                tool_type=tool_type,
-                serial_number=serial_number,
-                added_by=f"{session['user_zone']} - {session['user_frt']}",
-                remarks=remarks
-            )
-            db.session.add(new_tool)
-            db.session.commit()
+            new_tool = {
+                'zone_name': session['user_zone'], 
+                'frt_name': session['user_frt'], 
+                'tool_type': tool_type,
+                'serial_number': serial_number,
+                'added_by': f"{session['user_zone']} - {session['user_frt']}",
+                'remarks': remarks
+            }
+            supabase.table('tool').insert(new_tool).execute()
             flash('Tool added successfully!', 'success')
             return redirect(url_for('dashboard'))
             
         except Exception as e:
             print(f"Error adding tool: {e}")
-            db.session.rollback()
             flash(f'Error adding tool: {str(e)}', 'error')
             return render_template('add_tool.html')
     
-    return render_template('add_tool.html', 
-                         user_zone=session['user_zone'], 
-                         user_frt=session['user_frt'])
+    return render_template('add_tool.html', user_zone=session['user_zone'], user_frt=session['user_frt'])
 
 @app.route('/select_location', methods=['GET', 'POST'])
 def select_location():
@@ -403,7 +378,6 @@ def select_location():
         zone_name = request.form['zone_name']
         frt_name = request.form['frt_name']
         return redirect(url_for('add_tool_for_location', zone_name=zone_name, frt_name=frt_name))
-    
     return render_template('select_location.html')
 
 @app.route('/add_tool/<zone_name>/<frt_name>', methods=['GET', 'POST'])
@@ -417,39 +391,58 @@ def add_tool_for_location(zone_name, frt_name):
             flash('Tool Type is required!', 'error')
             return render_template('add_tool_for_location.html', zone_name=zone_name, frt_name=frt_name)
         
-        new_tool = Tool(
-            zone_name=zone_name, 
-            frt_name=frt_name, 
-            tool_type=tool_type,
-            serial_number=serial_number,
-            remarks=remarks
-        )
-        db.session.add(new_tool)
-        db.session.commit()
-        flash('Tool added successfully!', 'success')
-        return redirect(url_for('index'))
+        new_tool = {
+            'zone_name': zone_name, 
+            'frt_name': frt_name, 
+            'tool_type': tool_type,
+            'serial_number': serial_number,
+            'remarks': remarks
+        }
+        try:
+            supabase.table('tool').insert(new_tool).execute()
+            flash('Tool added successfully!', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            flash(f'Error adding tool: {str(e)}', 'error')
     
     return render_template('add_tool_for_location.html', zone_name=zone_name, frt_name=frt_name)
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_tool(id):
-    tool = Tool.query.get_or_404(id)
+    try:
+        response = supabase.table('tool').select('*').eq('id', id).execute()
+        if not response.data:
+            return "Tool not found", 404
+        tool = Tool(**response.data[0])
+    except Exception as e:
+        return f"Error: {e}", 500
     
     if request.method == 'POST':
-        tool.zone_name = request.form['zone_name']
-        tool.frt_name = request.form['frt_name']
-        tool.tool_type = request.form['tool_type']
-        tool.serial_number = request.form.get('serial_number', '')
-        tool.remarks = request.form.get('remarks', '')
+        zone_name = request.form['zone_name']
+        frt_name = request.form['frt_name']
+        tool_type = request.form['tool_type']
+        serial_number = request.form.get('serial_number', '')
+        remarks = request.form.get('remarks', '')
         
-        if not tool.zone_name or not tool.frt_name or not tool.tool_type:
+        if not zone_name or not frt_name or not tool_type:
             flash('Zone Name, FRT Name, and Tool Type are required!', 'error')
             return render_template('edit.html', tool=tool)
         
-        db.session.commit()
-        flash('Tool updated successfully!', 'success')
-        return redirect(url_for('index'))
-    
+        updates = {
+            'zone_name': zone_name,
+            'frt_name': frt_name,
+            'tool_type': tool_type,
+            'serial_number': serial_number,
+            'remarks': remarks,
+            'updated_at': datetime.utcnow().isoformat()
+        }
+        try:
+            supabase.table('tool').update(updates).eq('id', id).execute()
+            flash('Tool updated successfully!', 'success')
+            return redirect(url_for('index'))
+        except Exception as e:
+            flash(f'Error updating tool: {str(e)}', 'error')
+            
     return render_template('edit.html', tool=tool)
 
 @app.route('/delete/<int:id>', methods=['POST'])
@@ -457,24 +450,34 @@ def delete_tool(id):
     if 'user_zone' not in session or 'user_frt' not in session:
         return redirect(url_for('login'))
     
-    tool = Tool.query.get_or_404(id)
-    
-    # Check if tool belongs to current user's location
-    if tool.zone_name != session['user_zone'] or tool.frt_name != session['user_frt']:
-        flash('You can only delete tools from your location!', 'error')
-        return redirect(url_for('dashboard'))
-    
-    db.session.delete(tool)
-    db.session.commit()
-    flash('Tool deleted successfully!', 'success')
+    try:
+        response = supabase.table('tool').select('*').eq('id', id).execute()
+        if not response.data:
+            return "Tool not found", 404
+        tool = Tool(**response.data[0])
+        
+        # Check if tool belongs to current user's location
+        if getattr(tool, 'zone_name', '') != session['user_zone'] or getattr(tool, 'frt_name', '') != session['user_frt']:
+            flash('You can only delete tools from your location!', 'error')
+            return redirect(url_for('dashboard'))
+        
+        supabase.table('tool').delete().eq('id', id).execute()
+        flash('Tool deleted successfully!', 'success')
+    except Exception as e:
+        flash(f'Error deleting tool: {str(e)}', 'error')
+        
     return redirect(url_for('dashboard'))
 
 @app.route('/view/<int:id>')
 def view_tool(id):
-    tool = Tool.query.get_or_404(id)
-    return render_template('view.html', tool=tool)
+    try:
+        response = supabase.table('tool').select('*').eq('id', id).execute()
+        if not response.data:
+            return "Tool not found", 404
+        tool = Tool(**response.data[0])
+        return render_template('view.html', tool=tool)
+    except Exception as e:
+        return f"Error: {e}", 500
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
