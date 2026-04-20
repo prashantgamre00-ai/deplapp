@@ -19,7 +19,8 @@
                             </option>
                             <option value="NAVI MUMBAI" {% if tool.zone_name=='NAVI MUMBAI' %}selected{% endif %}>NAVI
                                 MUMBAI</option>
-                            <option value="NORTH GOA" {% if tool.zone_name=='NORTH GOA' %}selected{% endif %}>NORTH GOA
+                            <option value="NORTH GOAA" {% if tool.zone_name=='NORTH GOAA' %}selected{% endif %}>NORTH
+                                GOAA
                             </option>
                             <option value="SOUTH GOA" {% if tool.zone_name=='SOUTH GOA' %}selected{% endif %}>SOUTH GOA
                             </option>
@@ -28,7 +29,7 @@
                             <option value="RAJKOT" {% if tool.zone_name=='RAJKOT' %}selected{% endif %}>RAJKOT</option>
                             <option value="OFFICE" {% if tool.zone_name=='OFFICE' %}selected{% endif %}>OFFICE</option>
                         </select>
-                        <div class="form-text">Enter the zone name (e.g., COASTAL, NORTH GO, SOUTH GOA)</div>
+                        <div class="form-text">Enter the zone name (e.g., COASTAL, NORTH GOAA, SOUTH GOA)</div>
                     </div>
 
                     <div class="mb-3">
@@ -113,7 +114,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <strong>Zone Names:</strong><br>
-                        <small class="text-muted">COASTAL, NAVI MUME, NORTH GO, SOUTH GOA, KALYAN, VASAI, RAJKOT,
+                        <small class="text-muted">COASTAL, NAVI MUME, NORTH GOA, SOUTH GOA, KALYAN, VASAI, RAJKOT,
                             OFFICE</small>
                     </div>
                     <div class="col-md-4">
@@ -136,7 +137,7 @@
     const zoneFrtMapping = {
         'COASTAL': ['KHED', 'JAMSANDE', 'MURUD'],
         'NAVI MUMBAI': ['BELAPUR-1', 'BELAPUR-2', 'AIROLI', 'SANPADA-1', 'SANPADA-2', 'SHILPHATA', 'NAVI MUMBAI-SD', 'KOPARKHAIRANE'],
-        'NORTH GOA': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
+        'NORTH GOAA': ['MAPUSA', 'PANJIM', 'GOA CIVIL'],
         'SOUTH GOA': ['MADGAON', 'VERNA', 'CONCOLIM', 'SANQUELIM'],
         'KALYAN': ['KALYAN', 'BHIWANDI', 'BADLAPUR', 'KALYAN CIVIL', 'AMBADI', 'SHILPHATA', 'KALYAN CIVIL-2', 'KALYAN-SD', 'AMBADI SD'],
         'VASAI': ['BADLAPUR', 'BHIWANDI', 'BOISAR', 'VASAI', 'TALASARI', 'VIRAR'],
