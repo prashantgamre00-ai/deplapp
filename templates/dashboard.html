@@ -16,7 +16,7 @@
         background: white;
         border-radius: 15px;
         padding: 1.5rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border: none;
         height: 100%;
@@ -26,7 +26,7 @@
 
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
 
     .stat-number {
@@ -50,14 +50,14 @@
         background: white;
         border-radius: 15px;
         padding: 1.5rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 
     .activity-feed {
         background: white;
         border-radius: 15px;
         padding: 1.5rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 
     .activity-item {
@@ -109,7 +109,7 @@
         background: white;
         border-radius: 0 15px 15px 15px;
         padding: 2rem;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 
     .zone-grid {
@@ -129,7 +129,7 @@
 
     .zone-card-mini:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .zone-name {
@@ -204,7 +204,7 @@
         background: white;
         border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 
     .tools-table .table {
@@ -389,7 +389,8 @@
             justify-content: center;
         }
 
-        .stat-card, .zone-card-mini {
+        .stat-card,
+        .zone-card-mini {
             cursor: pointer;
         }
     }
@@ -403,7 +404,7 @@
                     <i class="bi bi-speedometer2"></i> Tools Dashboard
                 </h1>
                 <p class="mb-0 opacity-75">
-                    <i class="bi bi-geo-alt"></i> 
+                    <i class="bi bi-geo-alt"></i>
                     <span class="location-badge badge bg-light text-dark">{{ user_zone }}</span>
                     <i class="bi bi-pin-map ms-2"></i>
                     <span class="location-badge badge bg-light text-dark">{{ user_frt }}</span>
@@ -459,12 +460,14 @@
     <!-- Tab Navigation -->
     <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview"
+                type="button" role="tab">
                 <i class="bi bi-grid-3x3-gap"></i> Overview
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="zones-tab" data-bs-toggle="tab" data-bs-target="#zones" type="button" role="tab">
+            <button class="nav-link" id="zones-tab" data-bs-toggle="tab" data-bs-target="#zones" type="button"
+                role="tab">
                 <i class="bi bi-map"></i> Zones
             </button>
         </li>
@@ -474,7 +477,8 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tools-tab" data-bs-toggle="tab" data-bs-target="#tools" type="button" role="tab">
+            <button class="nav-link" id="tools-tab" data-bs-toggle="tab" data-bs-target="#tools" type="button"
+                role="tab">
                 <i class="bi bi-tools"></i> Tools
             </button>
         </li>
@@ -491,26 +495,26 @@
                     </h5>
                     <div class="zone-grid">
                         {% for zone in all_zones %}
-                            <div class="zone-card-mini" onclick="showTab('zones')">
-                                <div class="zone-name">{{ zone }}</div>
-                                <div class="zone-stats-mini">
-                                    <div class="stat-mini">
-                                        <div class="stat-mini-number">{{ zone_stats[zone].total }}</div>
-                                        <div class="stat-mini-label">Tools</div>
-                                    </div>
-                                    <div class="stat-mini">
-                                        <div class="stat-mini-number">{{ zone_stats[zone].frt_count }}</div>
-                                        <div class="stat-mini-label">FRTs</div>
-                                    </div>
-                                    <div class="stat-mini">
-                                        <div class="stat-mini-number">{{ zone_stats[zone].frt_coverage }}%</div>
-                                        <div class="stat-mini-label">Coverage</div>
-                                    </div>
+                        <div class="zone-card-mini" onclick="showTab('zones')">
+                            <div class="zone-name">{{ zone }}</div>
+                            <div class="zone-stats-mini">
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ zone_stats[zone].total }}</div>
+                                    <div class="stat-mini-label">Tools</div>
                                 </div>
-                                {% if zone_stats[zone].empty_frt_count > 0 %}
-                                    <small class="text-warning">{{ zone_stats[zone].empty_frt_count }} empty FRTs</small>
-                                {% endif %}
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ zone_stats[zone].frt_count }}</div>
+                                    <div class="stat-mini-label">FRTs</div>
+                                </div>
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ zone_stats[zone].frt_coverage }}%</div>
+                                    <div class="stat-mini-label">Coverage</div>
+                                </div>
                             </div>
+                            {% if zone_stats[zone].empty_frt_count > 0 %}
+                            <small class="text-warning">{{ zone_stats[zone].empty_frt_count }} empty FRTs</small>
+                            {% endif %}
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -535,14 +539,14 @@
                             </a>
                         </div>
                         {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
-                                        {{ message }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
                         {% endwith %}
                     </div>
 
@@ -564,11 +568,13 @@
                         <hr>
                         <div class="row text-center">
                             <div class="col-6">
-                                <div class="fw-bold text-info">{{ "%.1f"|format((total_with_serial / total_tools * 100) if total_tools > 0 else 0) }}%</div>
+                                <div class="fw-bold text-info">{{ "%.1f"|format((total_with_serial / total_tools * 100)
+                                    if total_tools > 0 else 0) }}%</div>
                                 <small class="text-muted">Serial Coverage</small>
                             </div>
                             <div class="col-6">
-                                <div class="fw-bold text-warning">{{ "%.1f"|format((total_with_remarks / total_tools * 100) if total_tools > 0 else 0) }}%</div>
+                                <div class="fw-bold text-warning">{{ "%.1f"|format((total_with_remarks / total_tools *
+                                    100) if total_tools > 0 else 0) }}%</div>
                                 <small class="text-muted">Remarks Coverage</small>
                             </div>
                         </div>
@@ -580,24 +586,24 @@
                             <i class="bi bi-clock-history"></i> Recent Activity
                         </h6>
                         {% if recent_tools %}
-                            {% for tool in recent_tools %}
-                                <div class="activity-item">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div class="flex-grow-1">
-                                            <strong>{{ tool.tool_type }}</strong>
-                                            <br><small class="text-muted">{{ tool.zone_name }} - {{ tool.frt_name }}</small>
-                                            {% if tool.serial_number %}
-                                                <br><small class="text-muted">SN: {{ tool.serial_number }}</small>
-                                            {% endif %}
-                                        </div>
-                                        <div class="activity-time ms-2">
-                                            {{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}
-                                        </div>
-                                    </div>
+                        {% for tool in recent_tools %}
+                        <div class="activity-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <strong>{{ tool.tool_type }}</strong>
+                                    <br><small class="text-muted">{{ tool.zone_name }} - {{ tool.frt_name }}</small>
+                                    {% if tool.serial_number %}
+                                    <br><small class="text-muted">SN: {{ tool.serial_number }}</small>
+                                    {% endif %}
                                 </div>
-                            {% endfor %}
+                                <div class="activity-time ms-2">
+                                    {{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
                         {% else %}
-                            <p class="text-muted text-center">No recent activity</p>
+                        <p class="text-muted text-center">No recent activity</p>
                         {% endif %}
                     </div>
                 </div>
@@ -611,40 +617,43 @@
             </h5>
             <div class="row">
                 {% for zone in all_zones %}
-                    <div class="col-12 col-lg-6 mb-4">
-                        <div class="zone-card-mini">
-                            <div class="zone-name">{{ zone }}</div>
-                            <div class="zone-stats-mini">
-                                <div class="stat-mini">
-                                    <div class="stat-mini-number">{{ zone_stats[zone].total }}</div>
-                                    <div class="stat-mini-label">Tools</div>
-                                </div>
-                                <div class="stat-mini">
-                                    <div class="stat-mini-number">{{ zone_stats[zone].frt_count }}</div>
-                                    <div class="stat-mini-label">Active FRTs</div>
-                                </div>
-                                <div class="stat-mini">
-                                    <div class="stat-mini-number">{{ zone_stats[zone].tool_type_count }}</div>
-                                    <div class="stat-mini-label">Tool Types</div>
-                                </div>
+                <div class="col-12 col-lg-6 mb-4">
+                    <div class="zone-card-mini">
+                        <div class="zone-name">{{ zone }}</div>
+                        <div class="zone-stats-mini">
+                            <div class="stat-mini">
+                                <div class="stat-mini-number">{{ zone_stats[zone].total }}</div>
+                                <div class="stat-mini-label">Tools</div>
                             </div>
-                            <div class="mb-2">
-                                <small class="text-muted">Coverage: {{ zone_stats[zone].frt_count }}/{{ zone_stats[zone].total_frt_count }} FRTs ({{ zone_stats[zone].frt_coverage }}%)</small>
-                                <div class="progress mt-1" style="height: 4px;">
-                                    <div class="progress-bar bg-success" style="width: {{ zone_stats[zone].frt_coverage }}%"></div>
-                                </div>
+                            <div class="stat-mini">
+                                <div class="stat-mini-number">{{ zone_stats[zone].frt_count }}</div>
+                                <div class="stat-mini-label">Active FRTs</div>
                             </div>
-                            <div class="frt-list">
-                                {% for frt in all_frts[zone] %}
-                                    {% set frt_key = zone + '_' + frt %}
-                                    <div class="frt-item {% if frt_stats[frt_key].total == 0 %}empty{% endif %}">
-                                        <span class="frt-name">{{ frt }}</span>
-                                        <span class="frt-count {% if frt_stats[frt_key].total == 0 %}zero{% endif %}">{{ frt_stats[frt_key].total }}</span>
-                                    </div>
-                                {% endfor %}
+                            <div class="stat-mini">
+                                <div class="stat-mini-number">{{ zone_stats[zone].tool_type_count }}</div>
+                                <div class="stat-mini-label">Tool Types</div>
                             </div>
                         </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Coverage: {{ zone_stats[zone].frt_count }}/{{
+                                zone_stats[zone].total_frt_count }} FRTs ({{ zone_stats[zone].frt_coverage }}%)</small>
+                            <div class="progress mt-1" style="height: 4px;">
+                                <div class="progress-bar bg-success"
+                                    style="width: {{ zone_stats[zone].frt_coverage }}%"></div>
+                            </div>
+                        </div>
+                        <div class="frt-list">
+                            {% for frt in all_frts[zone] %}
+                            {% set frt_key = zone + '_' + frt %}
+                            <div class="frt-item {% if frt_stats[frt_key].total == 0 %}empty{% endif %}">
+                                <span class="frt-name">{{ frt }}</span>
+                                <span class="frt-count {% if frt_stats[frt_key].total == 0 %}zero{% endif %}">{{
+                                    frt_stats[frt_key].total }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -656,44 +665,47 @@
             </h5>
             <div class="row">
                 {% for zone in all_zones %}
-                    <div class="col-12">
-                        <h6 class="mb-3">{{ zone }}</h6>
-                        <div class="zone-grid mb-4">
-                            {% for frt in all_frts[zone] %}
-                                {% set frt_key = zone + '_' + frt %}
-                                <div class="zone-card-mini {% if frt_stats[frt_key].total == 0 %}empty{% endif %}">
-                                    <div class="zone-name">{{ frt }}</div>
-                                    <div class="zone-stats-mini">
-                                        <div class="stat-mini">
-                                            <div class="stat-mini-number">{{ frt_stats[frt_key].total }}</div>
-                                            <div class="stat-mini-label">Tools</div>
-                                        </div>
-                                        <div class="stat-mini">
-                                            <div class="stat-mini-number">{{ frt_stats[frt_key].tool_type_count }}</div>
-                                            <div class="stat-mini-label">Types</div>
-                                        </div>
-                                    </div>
-                                    {% if frt_stats[frt_key].total > 0 %}
-                                        <div class="mb-2">
-                                            <small class="text-muted">Serial: {{ frt_stats[frt_key].with_serial }}/{{ frt_stats[frt_key].total }}</small>
-                                            <br><small class="text-muted">Remarks: {{ frt_stats[frt_key].with_remarks }}/{{ frt_stats[frt_key].total }}</small>
-                                        </div>
-                                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="showToolsForLocation('{{ zone }}', '{{ frt }}')">
-                                            <i class="bi bi-eye"></i> View Tools
-                                        </a>
-                                    {% else %}
-                                        <div class="text-center">
-                                            <small class="text-muted">No tools</small>
-                                            <br>
-                                            <a href="{{ url_for('add_tool') }}" class="btn btn-sm btn-outline-success">
-                                                <i class="bi bi-plus-circle"></i> Add Tool
-                                            </a>
-                                        </div>
-                                    {% endif %}
+                <div class="col-12">
+                    <h6 class="mb-3">{{ zone }}</h6>
+                    <div class="zone-grid mb-4">
+                        {% for frt in all_frts[zone] %}
+                        {% set frt_key = zone + '_' + frt %}
+                        <div class="zone-card-mini {% if frt_stats[frt_key].total == 0 %}empty{% endif %}">
+                            <div class="zone-name">{{ frt }}</div>
+                            <div class="zone-stats-mini">
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ frt_stats[frt_key].total }}</div>
+                                    <div class="stat-mini-label">Tools</div>
                                 </div>
-                            {% endfor %}
+                                <div class="stat-mini">
+                                    <div class="stat-mini-number">{{ frt_stats[frt_key].tool_type_count }}</div>
+                                    <div class="stat-mini-label">Types</div>
+                                </div>
+                            </div>
+                            {% if frt_stats[frt_key].total > 0 %}
+                            <div class="mb-2">
+                                <small class="text-muted">Serial: {{ frt_stats[frt_key].with_serial }}/{{
+                                    frt_stats[frt_key].total }}</small>
+                                <br><small class="text-muted">Remarks: {{ frt_stats[frt_key].with_remarks }}/{{
+                                    frt_stats[frt_key].total }}</small>
+                            </div>
+                            <a href="#" class="btn btn-sm btn-outline-primary"
+                                onclick="showToolsForLocation('{{ zone }}', '{{ frt }}')">
+                                <i class="bi bi-eye"></i> View Tools
+                            </a>
+                            {% else %}
+                            <div class="text-center">
+                                <small class="text-muted">No tools</small>
+                                <br>
+                                <a href="{{ url_for('add_tool') }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-plus-circle"></i> Add Tool
+                                </a>
+                            </div>
+                            {% endif %}
                         </div>
+                        {% endfor %}
                     </div>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -719,39 +731,45 @@
                         </thead>
                         <tbody>
                             {% if tools_by_location %}
-                                {% for zone in all_zones %}
-                                    {% for frt in all_frts[zone] %}
-                                        {% for tool in tools_by_location[zone][frt] %}
-                                            <tr>
-                                                <td><span class="badge bg-primary">{{ zone }}</span></td>
-                                                <td><span class="badge bg-info">{{ frt }}</span></td>
-                                                <td><span class="badge bg-secondary">{{ tool.tool_type }}</span></td>
-                                                <td>{{ tool.serial_number or '-' }}</td>
-                                                <td>{{ tool.remarks[:30] + '...' if tool.remarks and tool.remarks|length > 30 else (tool.remarks or '-') }}</td>
-                                                <td>{{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}</td>
-                                                <td>
-                                                    <div class="d-flex gap-1">
-                                                        <a href="{{ url_for('view_tool', id=tool.id) }}" class="btn btn-info btn-action btn-sm">View</a>
-                                                        <a href="{{ url_for('edit_tool', id=tool.id) }}" class="btn btn-warning btn-action btn-sm">Edit</a>
-                                                        <form method="POST" action="{{ url_for('delete_tool', id=tool.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this tool?');">
-                                                            <button type="submit" class="btn btn-danger btn-action btn-sm">Delete</button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endfor %}
-                                {% endfor %}
+                            {% for zone in all_zones %}
+                            {% for frt in all_frts[zone] %}
+                            {% for tool in tools_by_location[zone][frt] %}
+                            <tr>
+                                <td><span class="badge bg-primary">{{ zone }}</span></td>
+                                <td><span class="badge bg-info">{{ frt }}</span></td>
+                                <td><span class="badge bg-secondary">{{ tool.tool_type }}</span></td>
+                                <td>{{ tool.serial_number or '-' }}</td>
+                                <td>{{ tool.remarks[:30] + '...' if tool.remarks and tool.remarks|length > 30 else
+                                    (tool.remarks or '-') }}</td>
+                                <td>{{ tool.created_at.strftime('%m/%d %H:%M') if tool.created_at else '' }}</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="{{ url_for('view_tool', id=tool.id) }}"
+                                            class="btn btn-info btn-action btn-sm">View</a>
+                                        <a href="{{ url_for('edit_tool', id=tool.id) }}"
+                                            class="btn btn-warning btn-action btn-sm">Edit</a>
+                                        <form method="POST" action="{{ url_for('delete_tool', id=tool.id) }}"
+                                            style="display: inline;"
+                                            onsubmit="return confirm('Are you sure you want to delete this tool?');">
+                                            <button type="submit"
+                                                class="btn btn-danger btn-action btn-sm">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                            {% endfor %}
                             {% else %}
-                                <tr>
-                                    <td colspan="7" class="text-center py-4">
-                                        <i class="bi bi-inbox fs-1 text-muted"></i>
-                                        <p class="text-muted mt-2">No tools found</p>
-                                        <a href="{{ url_for('add_tool') }}" class="btn btn-primary btn-sm mt-2">
-                                            <i class="bi bi-plus-circle"></i> Add Your First Tool
-                                        </a>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                                    <p class="text-muted mt-2">No tools found</p>
+                                    <a href="{{ url_for('add_tool') }}" class="btn btn-primary btn-sm mt-2">
+                                        <i class="bi bi-plus-circle"></i> Add Your First Tool
+                                    </a>
+                                </td>
+                            </tr>
                             {% endif %}
                         </tbody>
                     </table>
@@ -762,69 +780,69 @@
 </div>
 
 <script>
-function showTab(tabName) {
-    const tab = document.querySelector(`[data-bs-target="#${tabName}"]`);
-    if (tab) {
-        const bsTab = new bootstrap.Tab(tab);
-        bsTab.show();
+    function showTab(tabName) {
+        const tab = document.querySelector(`[data-bs-target="#${tabName}"]`);
+        if (tab) {
+            const bsTab = new bootstrap.Tab(tab);
+            bsTab.show();
+        }
     }
-}
 
-function showToolsForLocation(zone, frt) {
-    // Navigate to tools tab and scroll to the specific location
-    showTab('tools');
-    setTimeout(() => {
-        // You could add highlighting or scrolling logic here
-        console.log(`Showing tools for ${zone} - ${frt}`);
-    }, 100);
-}
-
-// Show success message when export buttons are clicked
-document.addEventListener('DOMContentLoaded', function() {
-    const excelBtn = document.querySelector('a[href*="export/excel"]');
-    const csvBtn = document.querySelector('a[href*="export/csv"]');
-    
-    if (excelBtn) {
-        excelBtn.addEventListener('click', function(e) {
-            // Show loading state
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating Excel...';
-            this.classList.add('disabled');
-            
-            // Reset after a short delay (file download starts automatically)
-            setTimeout(() => {
-                this.innerHTML = originalText;
-                this.classList.remove('disabled');
-            }, 2000);
-        });
+    function showToolsForLocation(zone, frt) {
+        // Navigate to tools tab and scroll to the specific location
+        showTab('tools');
+        setTimeout(() => {
+            // You could add highlighting or scrolling logic here
+            console.log(`Showing tools for ${zone} - ${frt}`);
+        }, 100);
     }
-    
-    if (csvBtn) {
-        csvBtn.addEventListener('click', function(e) {
-            // Show loading state
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating CSV...';
-            this.classList.add('disabled');
-            
-            // Reset after a short delay (file download starts automatically)
-            setTimeout(() => {
-                this.innerHTML = originalText;
-                this.classList.remove('disabled');
-            }, 2000);
-        });
-    }
-});
 
-// Add touch feedback for mobile
-if ('ontouchstart' in window) {
-    document.querySelectorAll('.stat-card, .zone-card-mini, .btn').forEach(element => {
-        element.addEventListener('touchstart', function() {
-            this.style.transform = 'scale(0.95)';
-        });
-        element.addEventListener('touchend', function() {
-            this.style.transform = '';
-        });
+    // Show success message when export buttons are clicked
+    document.addEventListener('DOMContentLoaded', function () {
+        const excelBtn = document.querySelector('a[href*="export/excel"]');
+        const csvBtn = document.querySelector('a[href*="export/csv"]');
+
+        if (excelBtn) {
+            excelBtn.addEventListener('click', function (e) {
+                // Show loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating Excel...';
+                this.classList.add('disabled');
+
+                // Reset after a short delay (file download starts automatically)
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('disabled');
+                }, 2000);
+            });
+        }
+
+        if (csvBtn) {
+            csvBtn.addEventListener('click', function (e) {
+                // Show loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating CSV...';
+                this.classList.add('disabled');
+
+                // Reset after a short delay (file download starts automatically)
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('disabled');
+                }, 2000);
+            });
+        }
     });
-}
+
+    // Add touch feedback for mobile
+    if ('ontouchstart' in window) {
+        document.querySelectorAll('.stat-card, .zone-card-mini, .btn').forEach(element => {
+            element.addEventListener('touchstart', function () {
+                this.style.transform = 'scale(0.95)';
+            });
+            element.addEventListener('touchend', function () {
+                this.style.transform = '';
+            });
+        });
+    }
 </script>
 {% endblock %}

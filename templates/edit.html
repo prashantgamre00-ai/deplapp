@@ -10,7 +10,7 @@
                 <h4 class="mb-0">Edit Tool</h4>
             </div>
             <div class="card-body">
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="zone_name" class="form-label">Zone Name</label>
                         <select class="form-select" id="zone_name" name="zone_name" required>
@@ -76,6 +76,18 @@
                         <textarea class="form-control" id="remarks" name="remarks" rows="3"
                             placeholder="Enter any additional notes or remarks (optional)">{{ tool.remarks or '' }}</textarea>
                         <div class="form-text">Add any additional information about the tool</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Tool Image</label>
+                        {% if tool.image_url %}
+                        <div class="mb-2">
+                            <img src="{{ tool.image_url }}" alt="Current Tool Image" class="img-thumbnail" style="max-height: 200px;">
+                        </div>
+                        <div class="form-text mb-2">Upload a new image to replace the current one.</div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <div class="form-text">Upload a photo of the tool (optional)</div>
                     </div>
 
                     <div class="mb-3">

@@ -195,7 +195,7 @@
                     </div>
                 </div>
 
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="tool_type" class="form-label">
                             <i class="bi bi-tools"></i> Tool Type
@@ -231,6 +231,14 @@
                         <textarea class="form-control" id="remarks" name="remarks" rows="4"
                             placeholder="Enter any additional notes or remarks (optional)"></textarea>
                         <div class="form-text">Add any important information about the tool</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="image" class="form-label">
+                            <i class="bi bi-image"></i> Tool Image
+                        </label>
+                        <input type="file" class="form-control form-control-lg" id="image" name="image" accept="image/*">
+                        <div class="form-text">Upload a photo of the tool (optional)</div>
                     </div>
 
                     <div class="d-flex justify-content-between">

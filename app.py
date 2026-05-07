@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, make_response
 from datetime import datetime
 from dotenv import load_dotenv
+from werkzeug.utils import secure_filename
+import uuid
 import io
 import os
 from supabase import create_client, Client
@@ -348,6 +350,20 @@ def add_tool():
             tool_type = request.form['tool_type']
             serial_number = request.form.get('serial_number', '')
             remarks = request.form.get('remarks', '')
+            image_url = ''
+            
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename:
+                    filename = secure_filename(file.filename)
+                    unique_filename = f"{uuid.uuid4()}_{filename}"
+                    try:
+                        file_bytes = file.read()
+                        mime_type = file.content_type or 'application/octet-stream'
+                        supabase.storage.from_('tools_image').upload(unique_filename, file_bytes, {"content-type": mime_type})
+                        image_url = supabase.storage.from_('tools_image').get_public_url(unique_filename)
+                    except Exception as e:
+                        print(f"Error uploading image: {e}")
             
             if not tool_type:
                 flash('Tool Type is required!', 'error')
@@ -359,7 +375,8 @@ def add_tool():
                 'tool_type': tool_type,
                 'serial_number': serial_number,
                 'added_by': f"{session['user_zone']} - {session['user_frt']}",
-                'remarks': remarks
+                'remarks': remarks,
+                'image_url': image_url
             }
             supabase.table('tool').insert(new_tool).execute()
             flash('Tool added successfully!', 'success')
@@ -386,6 +403,20 @@ def add_tool_for_location(zone_name, frt_name):
         tool_type = request.form['tool_type']
         serial_number = request.form.get('serial_number', '')
         remarks = request.form.get('remarks', '')
+        image_url = ''
+        
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename:
+                filename = secure_filename(file.filename)
+                unique_filename = f"{uuid.uuid4()}_{filename}"
+                try:
+                    file_bytes = file.read()
+                    mime_type = file.content_type or 'application/octet-stream'
+                    supabase.storage.from_('tools_image').upload(unique_filename, file_bytes, {"content-type": mime_type})
+                    image_url = supabase.storage.from_('tools_image').get_public_url(unique_filename)
+                except Exception as e:
+                    print(f"Error uploading image: {e}")
         
         if not tool_type:
             flash('Tool Type is required!', 'error')
@@ -396,7 +427,8 @@ def add_tool_for_location(zone_name, frt_name):
             'frt_name': frt_name, 
             'tool_type': tool_type,
             'serial_number': serial_number,
-            'remarks': remarks
+            'remarks': remarks,
+            'image_url': image_url
         }
         try:
             supabase.table('tool').insert(new_tool).execute()
@@ -424,6 +456,20 @@ def edit_tool(id):
         serial_number = request.form.get('serial_number', '')
         remarks = request.form.get('remarks', '')
         
+        image_url = getattr(tool, 'image_url', '')
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename:
+                filename = secure_filename(file.filename)
+                unique_filename = f"{uuid.uuid4()}_{filename}"
+                try:
+                    file_bytes = file.read()
+                    mime_type = file.content_type or 'application/octet-stream'
+                    supabase.storage.from_('tools_image').upload(unique_filename, file_bytes, {"content-type": mime_type})
+                    image_url = supabase.storage.from_('tools_image').get_public_url(unique_filename)
+                except Exception as e:
+                    print(f"Error uploading image: {e}")
+        
         if not zone_name or not frt_name or not tool_type:
             flash('Zone Name, FRT Name, and Tool Type are required!', 'error')
             return render_template('edit.html', tool=tool)
@@ -434,6 +480,7 @@ def edit_tool(id):
             'tool_type': tool_type,
             'serial_number': serial_number,
             'remarks': remarks,
+            'image_url': image_url,
             'updated_at': datetime.utcnow().isoformat()
         }
         try:
